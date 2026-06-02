@@ -831,15 +831,7 @@ body {
 }
 
 #reader {
-    width: 100% !important;
-    height: 100% !important;
     border: none !important;
-}
-
-#reader video {
-    object-fit: cover !important;
-    width: 100% !important;
-    height: 100% !important;
 }
 
 /* html5-qrcode kütüphanesinin varsayılan gereksiz arayüzlerini gizleme */
