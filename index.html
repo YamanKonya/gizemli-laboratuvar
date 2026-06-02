@@ -35,34 +35,106 @@
 
             <!-- SOUND CONTROLS & HEADER UTILITIES -->
             <div class="top-nav">
-                <button id="sound-btn" class="icon-btn" title="Ses Aç/Kapat">
-                    <i class="fas fa-volume-up"></i>
+                <button id="home-btn" class="icon-btn" title="Ana Sayfa / Branş Seçimi">
+                    <i class="fas fa-house"></i>
                 </button>
                 <div class="logo-text">SYS.v400</div>
-                <button id="teacher-btn" class="icon-btn" title="Öğretmen Paneli">
-                    <i class="fas fa-user-gear"></i>
-                </button>
+                <div class="nav-right">
+                    <button id="sound-btn" class="icon-btn" title="Ses Aç/Kapat">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <button id="teacher-btn" class="icon-btn" title="Öğretmen Paneli">
+                        <i class="fas fa-user-gear"></i>
+                    </button>
+                </div>
             </div>
+
+            <!-- ============================================ -->
+            <!-- 0. BRANCH SELECTION SCREEN (MAIN LANDING)    -->
+            <!-- ============================================ -->
+            <section id="category-selection-screen" class="app-screen active">
+                <div class="category-selection-container">
+                    <div class="cyber-badge">🕵️‍♂️ DEDEKTİFLİK AKADEMİSİ</div>
+                    <h2 class="portal-title">BRANŞ SEÇİNİZ</h2>
+                    <p class="portal-desc">Çözeceğiniz gizemli konuyu seçin ve hemen göreve başlayın!</p>
+                    
+                    <div class="categories-grid">
+                        <div class="category-card math" data-subject="matematik">
+                            <div class="card-icon"><i class="fas fa-calculator"></i></div>
+                            <div class="card-info">
+                                <h3>MATEMATİK</h3>
+                                <p>Sayılar & Şifre: Cahit Arf</p>
+                            </div>
+                            <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+
+                        <div class="category-card physics" data-subject="fizik">
+                            <div class="card-icon"><i class="fas fa-atom"></i></div>
+                            <div class="card-info">
+                                <h3>FİZİK</h3>
+                                <p>Evrenin Kodu: Newton</p>
+                            </div>
+                            <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+
+                        <div class="category-card chemistry" data-subject="kimya">
+                            <div class="card-icon"><i class="fas fa-flask"></i></div>
+                            <div class="card-info">
+                                <h3>KİMYA & FEN</h3>
+                                <p>Kayıp Parşömen: Galileo</p>
+                            </div>
+                            <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+
+                        <div class="category-card it" data-subject="bilisim">
+                            <div class="card-icon"><i class="fas fa-microchip"></i></div>
+                            <div class="card-info">
+                                <h3>BİLİŞİM & YAZILIM</h3>
+                                <p>Siber Bulmaca: Turing</p>
+                            </div>
+                            <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+
+                        <div class="category-card social" data-subject="sosyal">
+                            <div class="card-icon"><i class="fas fa-compass"></i></div>
+                            <div class="card-info">
+                                <h3>SOSYAL BİLGİLER</h3>
+                                <p>Eşsiz Harita: Piri Reis</p>
+                            </div>
+                            <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+
+                        <div class="category-card literature" data-subject="edebiyat">
+                            <div class="card-icon"><i class="fas fa-feather-pointed"></i></div>
+                            <div class="card-info">
+                                <h3>EDEBİYAT & TÜRKÇE</h3>
+                                <p>Kelimelerin Sırrı: Yunus Emre</p>
+                            </div>
+                            <div class="card-arrow"><i class="fas fa-chevron-right"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <!-- ============================================ -->
             <!-- 1. WELCOME / PORTAL SCREEN                   -->
             <!-- ============================================ -->
-            <section id="welcome-screen" class="app-screen active">
+            <section id="welcome-screen" class="app-screen">
                 <div class="welcome-container">
-                    <div class="cyber-badge">🕵️‍♂️ GİZLİ GÖREV AKTİF</div>
+                    <div class="cyber-badge" id="welcome-badge">🕵️‍♂️ GİZLİ GÖREV AKTİF</div>
                     
-                    <div class="glowing-portal" style="border-color: var(--neon-cyan); box-shadow: var(--glow-cyan);">
-                        <i class="fas fa-flask portal-icon text-cyan" style="font-size: 3.2rem; filter: drop-shadow(var(--glow-cyan));"></i>
-                        <div class="scanner-line" style="background: linear-gradient(90deg, transparent, var(--neon-purple), transparent); box-shadow: var(--glow-purple);"></div>
+                    <div class="glowing-portal" id="welcome-portal-container" style="border-color: var(--neon-cyan); box-shadow: var(--glow-cyan);">
+                        <i class="fas fa-flask portal-icon text-cyan" id="welcome-portal-icon" style="font-size: 3.2rem; filter: drop-shadow(var(--glow-cyan));"></i>
+                        <div class="scanner-line" id="welcome-scanner-line" style="background: linear-gradient(90deg, transparent, var(--neon-purple), transparent); box-shadow: var(--glow-purple);"></div>
                     </div>
                     
-                    <h1 class="game-title">
+                    <h1 class="game-title" id="welcome-game-title">
                         <span>GİZEMLİ</span>
                         LABORATUVAR
                     </h1>
-                    <h2 class="game-subtitle">🕵️‍♂️ Kayıp Bilim İnsanı Dedektifliği 🔬</h2>
+                    <h2 class="game-subtitle" id="welcome-game-subtitle">🕵️‍♂️ Kayıp Bilim İnsanı Dedektifliği 🔬</h2>
                     
-                    <p class="game-intro" style="font-size: 0.88rem; line-height: 1.5; color: var(--text-primary);">
+                    <p class="game-intro" id="welcome-game-intro" style="font-size: 0.88rem; line-height: 1.5; color: var(--text-primary);">
                         Laboratuvarda yüzyıllar önce yaşamış dâhi bir bilim insanının sır gibi saklanan kayıp parşömeni gizli! 
                         Sınıftaki istasyonları bul, QR kodları tarat, eğlenceli bilmeceleri çöz, harfleri toplayıp gizemli dâhiyi ortaya çıkar! 🧪✨
                     </p>
@@ -74,8 +146,12 @@
 
                     <button id="start-game-btn" class="cyber-btn pulsing" style="background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);">
                         <span class="btn-glow"></span>
-                        LABORATUVARA SIZ! 🧪🚀
+                        <span id="welcome-btn-text">LABORATUVARA SIZ! 🧪🚀</span>
                     </button>
+                    
+                    <div style="margin-top: 12px;">
+                        <button id="back-to-categories-btn" class="text-btn font-small"><i class="fas fa-chevron-left"></i> Ders Seçimine Dön</button>
+                    </div>
                 </div>
             </section>
 
@@ -278,6 +354,18 @@
                         <button id="close-teacher-btn" class="icon-btn"><i class="fas fa-xmark"></i></button>
                     </div>
                     
+                    <div class="teacher-subject-filter-bar">
+                        <label for="teacher-subject-select"><i class="fas fa-book text-cyan"></i> Aktif Ders:</label>
+                        <select id="teacher-subject-select" class="cyber-select">
+                            <option value="kimya" selected>KİMYA & FEN (Galileo)</option>
+                            <option value="matematik">MATEMATİK (Cahit Arf)</option>
+                            <option value="fizik">FİZİK (Newton)</option>
+                            <option value="bilisim">BİLİŞİM & YAZILIM (Alan Turing)</option>
+                            <option value="sosyal">SOSYAL BİLGİLER (Piri Reis)</option>
+                            <option value="edebiyat">EDEBİYAT & TÜRKÇE (Yunus Emre)</option>
+                        </select>
+                    </div>
+
                     <div class="modal-tabs">
                         <button class="tab-btn active" data-tab="tab-overview">Genel Bakış</button>
                         <button class="tab-btn" data-tab="tab-qrs">QR Kod Kartları</button>
@@ -286,10 +374,10 @@
                     <div class="modal-body scrollable">
                         <!-- Tab 1: Overview -->
                         <div id="tab-overview" class="tab-content active">
-                            <p class="tab-desc">Bu kaçış oyununu sınıfınızda uygulamak için aşağıdaki istasyon şifrelerini ve cevaplarını kullanabilirsiniz.</p>
+                            <p class="tab-desc">Seçili dersin şifre ve cevap anahtarı aşağıdadır. İlerlemeyi sıfırlayabilirsiniz.</p>
                             
                             <div class="teacher-stats">
-                                <button id="reset-class-progress-btn" class="cyber-btn danger-btn"><i class="fas fa-trash-can"></i> Tüm İlerlemeyi Sıfırla</button>
+                                <button id="reset-class-progress-btn" class="cyber-btn danger-btn"><i class="fas fa-trash-can"></i> Bu Dersi Sıfırla</button>
                             </div>
 
                             <div class="stations-list">

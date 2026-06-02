@@ -4,203 +4,812 @@
 
 // ==========================================================================
 // 1. İSTASYON ZİNCİRİ VERİ TABANI (18 Adımlı Linear Scavenger Hunt)
-// ==========================================================================
-const STATIONS = [
-    {
-        id: 1,
-        title: "Başlangıç Noktası",
-        code: "START",
-        backupCode: "1001",
-        letter: null, // İlk adımda harf yok, sadece Dereceli Silindir'e yönlendirir
-        riddle: "Cam bedenim ince uzun, üstüm de çizgiler dizili. Sıvıları ölçerim hassasça, bulun bakalım bu gizemli şekli?",
-        hint: "Laboratuvarda sıvı hacmi ölçmek için kullanılan çizgili silindirik cam kap.",
-        answers: ["dereceli silindir", "mezur", "mezura", "derecelisilindir"],
-        nextStationName: "Dereceli Silindir"
+// ==============================================================const SUBJECTS_DATA = {
+    kimya: {
+        name: "KİMYA & FEN BİLİMLERİ",
+        badge: "🧪 GİZEMLİ LABORATUVAR",
+        iconClass: "fas fa-flask",
+        themeClass: "theme-kimya",
+        secretPhrase: "GALİLEO GALİLEİ",
+        welcomeTitle: "<span>GİZEMLİ</span>LABORATUVAR",
+        welcomeSubtitle: "🕵️‍♂️ Kayıp Bilim İnsanı Dedektifliği 🔬",
+        welcomeIntro: "Laboratuvarda yüzyıllar önce yaşamış dâhi bir bilim insanının sır gibi saklanan kayıp parşömeni gizli! Sınıftaki istasyonları bul, QR kodları tarat, eğlenceli bilmeceleri çöz, harfleri toplayıp gizemli dâhiyi ortaya çıkar! 🧪✨",
+        btnText: "LABORATUVARA SIZ! 🧪🚀",
+        stations: [
+            {
+                id: 1,
+                title: "Başlangıç Noktası",
+                code: "START",
+                backupCode: "1001",
+                letter: null,
+                riddle: "Cam bedenim ince uzun, üstüm de çizgiler dizili. Sıvıları ölçerim hassasça, bulun bakalım bu gizemli şekli?",
+                hint: "Laboratuvarda sıvı hacmi ölçmek için kullanılan çizgili silindirik cam kap.",
+                answers: ["dereceli silindir", "mezur", "mezura", "derecelisilindir"],
+                nextStationName: "Dereceli Silindir"
+            },
+            {
+                id: 2,
+                title: "Dereceli Silindir",
+                code: "DERECELI",
+                backupCode: "1002",
+                letter: "İ",
+                riddle: "Söz uçar yazı kalır. Elektrik telleriyle haber taşırım yollara. Benimle mesaj çabucak alınır, bilin bakalım neyim?",
+                hint: "Mors alfabesi kullanarak kablolar aracılığıyla yazılı mesaj gönderen eski iletişim aleti.",
+                answers: ["telgraf", "telgrafci"],
+                nextStationName: "Telgraf"
+            },
+            {
+                id: 3,
+                title: "Telgraf",
+                code: "TELGRAF",
+                backupCode: "1003",
+                letter: "G",
+                riddle: "Işığım masadan doğar, perdeye düşer yüzüm. Saydam kağıtlar üstünde büyür her bir sözüm. Ben kimim?",
+                hint: "Asetat kağıdı üzerindeki şekilleri ışık yardımıyla duvara veya perdeye yansıtan eski projeksiyon cihazı.",
+                answers: ["tepegoz", "tepe goz"],
+                nextStationName: "Tepegöz"
+            },
+            {
+                id: 4,
+                title: "Tepegöz",
+                code: "TEPEGOZ",
+                backupCode: "1004",
+                letter: "O",
+                riddle: "Sayılar dostum benim, işlemlerle konuşurum. Toplar, çıkarır, çarparım; en zor hesabı hemen bulurum. Ben neyim?",
+                hint: "Matematiksel işlemleri tuşlarına basarak saniyeler içinde yapan küçük elektronik alet.",
+                answers: ["hesap makinesi", "hesapmakinesi"],
+                nextStationName: "Hesap Makinesi"
+            },
+            {
+                id: 5,
+                title: "Hesap Makinesi",
+                code: "HESAP",
+                backupCode: "1005",
+                letter: "L",
+                riddle: "Kefede susar sözüm, dengeyle benim işim. Kütleleri ölçerken, pirinçten dökülmüş küçük kardeşlerimdir yoldaşım. Ben neyim?",
+                hint: "Eşit kollu terazilerde ağırlığı dengelemek için kefeye konulan farklı gramajlardaki metal kütleler.",
+                answers: ["agirlik takimi", "agirliktakimi", "agirliklar", "agirlik"],
+                nextStationName: "Ağırlık Takımı"
+            },
+            {
+                id: 6,
+                title: "Ağırlık Takımı",
+                code: "AGIRLIK",
+                backupCode: "1006",
+                letter: "L",
+                riddle: "Yay gerilir içimde, kuvvetle sırdaş olurum. Newton'dur birimim benim, ağırlığı onunla bulurum. Ben neyim?",
+                hint: "İçindeki sarmal yayın esnemesiyle kuvvet veya ağırlık ölçen alet.",
+                answers: ["dinamometre", "kuvvetolcer", "kuvvet olcer"],
+                nextStationName: "Dinamometre"
+            },
+            {
+                id: 7,
+                title: "Dinamometre",
+                code: "DINAMO",
+                backupCode: "1007",
+                letter: "İ",
+                riddle: "Küçük ateşimle ısıtırım her şeyi, içinde mavi sıvı parlar gizemli. Deney tüplerinin dostuyum ben, bilin bakalım kimim?",
+                hint: "Mavi ispirto yakıtıyla çalışan, laboratuvarda ısıtma deneylerinde kullanılan küçük ocak.",
+                answers: ["ispirto ocagi", "ispirtoocagi"],
+                nextStationName: "İspirto Ocağı"
+            },
+            {
+                id: 8,
+                title: "İspirto Ocağı",
+                code: "ISPIRTO",
+                backupCode: "1008",
+                letter: "L",
+                riddle: "Cam gözümle bakarım, görünmeyeni görürüm. Hücrelerin dünyasına yolculuklar ettiririm. Ben neyim?",
+                hint: "Gözle görülemeyecek kadar küçük canlıları veya yapıları mercekleriyle büyüterek gösteren optik cihaz.",
+                answers: ["mikroskop", "isikmikroskobu"],
+                nextStationName: "Mikroskop"
+            },
+            {
+                id: 9,
+                title: "Mikroskop",
+                code: "MIKROSKOP",
+                backupCode: "1009",
+                letter: "A",
+                riddle: "Işığı eğip büker, bazen odakta birleştirir. İnce ve kalın kenarlıyım, görüntüleri değiştiririm. Biz kimiz?",
+                hint: "Gözlüklerde, büyüteçlerde kullanılan, ışığı kıran saydam cam takımı.",
+                answers: ["mercek takimi", "mercekler", "mercektakimi", "mercek"],
+                nextStationName: "Mercek Takımı"
+            },
+            {
+                id: 10,
+                title: "Mercek Takımı",
+                code: "MERCEK",
+                backupCode: "1010",
+                letter: "A",
+                riddle: "İki kap yan yana, içi dolu suyla. Tabanları birleşir, seviyeler eşitlenir aynı anda. Biz kimiz?",
+                hint: "Tabanları bir boruyla birleştirilmiş, sıvı seviyelerinin her kolda eşit olmasını sağlayan kaplar düzeneği.",
+                answers: ["bilesik kaplar", "bilesikkaplar", "bilesik kap"],
+                nextStationName: "Bileşik Kaplar"
+            },
+            {
+                id: 11,
+                title: "Bileşik Kaplar",
+                code: "BILESIK",
+                backupCode: "1011",
+                letter: "L",
+                riddle: "Görüntüyü büyütürüm, bazen de ters çeviririm. Kaşığın iç yüzü gibiyim, ışığı odakta eritirim. Ben hangi aynayım?",
+                hint: "Yansıtıcı yüzeyi küresel bir çukur olan, cisimleri dev ve ters gösterebilen ayna tipi.",
+                answers: ["cukur ayna", "cukurayna", "konkav ayna"],
+                nextStationName: "Çukur Ayna"
+            },
+            {
+                id: 12,
+                title: "Çukur Ayna",
+                code: "AYNA",
+                backupCode: "1012",
+                letter: "E",
+                riddle: "Küçük tüpler sıra olur içimde. Laboratuvarda dik dururlar, kırılmasınlar diye güvende tutarım. Ben neyim?",
+                hint: "Deney tüplerinin dik durmasını sağlayan, ahşap, plastik veya metalden yapılmış tüp standı.",
+                answers: ["tupluk", "tup rafi", "tuprafi", "tup standi", "tupstandi"],
+                nextStationName: "Tüplük"
+            },
+            {
+                id: 13,
+                title: "Tüplük",
+                code: "TUPLUK",
+                backupCode: "1013",
+                letter: "G",
+                riddle: "Kaynar suyun nefesi, göğe çıkar incecik. Soğuk camda yoğunlaşır, damlar berrak ve temizce. Ben hangi düzeneğim?",
+                hint: "Sıvı karışımları kaynatıp buharlaştırarak ve ardından yoğuşturarak saflaştıran laboratuvar düzeneği.",
+                answers: ["damitma duzenegi", "damitmaduzenegi", "damitma imbigi", "damitma"],
+                nextStationName: "Damıtma Düzeneği"
+            },
+            {
+                id: 14,
+                title: "Damıtma Düzeneği",
+                code: "DAMITMA",
+                backupCode: "1014",
+                letter: null,
+                riddle: "Akım bana uğrar, bazen hızlı bazen yavaş. Direnci ayarlarım sürgümle yavaş yavaş. Ben kimim?",
+                hint: "Elektrik devrelerinde direnci el yardımıyla değiştirerek akım şiddetini ayarlayan ayarlı direnç.",
+                answers: ["reosta", "ayarli direnc", "ayarlidirenc"],
+                nextStationName: "Reosta"
+            },
+            {
+                id: 15,
+                title: "Reosta",
+                code: "REOSTA",
+                backupCode: "1015",
+                letter: "İ",
+                riddle: "Renklerim çeşit çeşit, sertliğim değişken. Yer kabuğunun süsüyüm, doğada saklanırken. Biz neyiz?",
+                hint: "Taşları ve kayaçları oluşturan, doğada kristal yapıda bulunan kimyasal bileşikler serisi.",
+                answers: ["mineral seti", "mineraller", "mineralseti", "mineral"],
+                nextStationName: "Mineral Seti"
+            },
+            {
+                id: 16,
+                title: "Mineral Seti",
+                code: "MINERAL",
+                backupCode: "1016",
+                letter: "L",
+                riddle: "Enerjiyi ben veririm, hayat bulur devreler. Prizden gelen gücü, lambaya ulaştırırım güvenle. Ben neyim?",
+                hint: "Elektrik devrelerine istenen voltajda akım sağlayan laboratuvar güç cihazı.",
+                answers: ["guc kaynagi", "guckaynagi", "adaptor"],
+                nextStationName: "Güç Kaynağı"
+            },
+            {
+                id: 17,
+                title: "Güç Kaynağı",
+                code: "GUC",
+                backupCode: "1017",
+                letter: "E",
+                riddle: "Laboratuvarda sessizim, ama elim iş tutar. Kıskaçları taşırım sırtımda, düzeneği ayakta tutarım. Ben neyim?",
+                hint: "Deney tüplerini, balonları veya reaksiyon kaplarını kıskaçla sabitlediğimiz dikey demir çubuklu laboratuvar standı.",
+                answers: ["destek cubugu", "destekcubugu", "laboratuvar destegi", "laboratuvardestegi"],
+                nextStationName: "Destek Çubuğu"
+            },
+            {
+                id: 18,
+                title: "Destek Çubuğu (Final)",
+                code: "DESTEK",
+                backupCode: "1018",
+                letter: null,
+                riddle: "TÜM ŞİFRELERİ BAŞARI İLE ÇÖZDÜNÜZ, ŞİMDİ TOPLADIĞINIZ HARFLERİ BİRLEŞTİREREK KAYIP BİLİM ADAMINI BULUNUZ",
+                hint: "Elde ettiğin 15 harfi karıştırarak yüzyıllar önce yaşamış olan modern bilimin kurucusu dahi bilim insanının adını bulmalısın.",
+                answers: ["galileo galilei", "galileogalilei"],
+                nextStationName: "BİTTİ"
+            }
+        ]
     },
-    {
-        id: 2,
-        title: "Dereceli Silindir",
-        code: "DERECELI",
-        backupCode: "1002",
-        letter: "İ",
-        riddle: "Söz uçar yazı kalır. Elektrik telleriyle haber taşırım yollara. Benimle mesaj çabucak alınır, bilin bakalım neyim?",
-        hint: "Mors alfabesi kullanarak kablolar aracılığıyla yazılı mesaj gönderen eski iletişim aleti.",
-        answers: ["telgraf", "telgrafci"],
-        nextStationName: "Telgraf"
+    matematik: {
+        name: "MATEMATİK",
+        badge: "📐 FORMÜLLERİN SIRRI",
+        iconClass: "fas fa-calculator",
+        themeClass: "theme-matematik",
+        secretPhrase: "CAHİT ARF",
+        welcomeTitle: "<span>GİZEMLİ</span>MATEMATİK",
+        welcomeSubtitle: "🕵️‍♂️ Sayılar ve Şifre Dedektifliği 📐",
+        welcomeIntro: "Matematik koridorlarında yüzyıllar önce yaşamış ünlü bir dâhi matematikçinin formülleri gizlendi! Sınıftaki matematik istasyonlarını bul, QR kodları tarat, zeka bilmecelerini çöz, harfleri toplayıp dâhiyi ortaya çıkar! 📐✨",
+        btnText: "MATEMATİĞİ ÇÖZ! 📐🚀",
+        stations: [
+            {
+                id: 1,
+                title: "Matematik Başlangıç Noktası",
+                code: "MATH_START",
+                backupCode: "2001",
+                letter: "C",
+                riddle: "Benim adım sıfır, çarpmada yutarım herkesi, toplamadaki etkim yok denecek gibi. Şimdi bulun bakalım geometrinin ve dairenin kalbi, sonsuz basamaklı meşhur sayıyı?",
+                hint: "Dairenin çevresinin çapına oranı olan, yaklaşık 3.14 olarak kabul edilen meşhur sayı.",
+                answers: ["pi", "pi sayisi", "3.14"],
+                nextStationName: "Pi Sayısı"
+            },
+            {
+                id: 2,
+                title: "Pi Sayısı",
+                code: "PI_SAYISI",
+                backupCode: "2002",
+                letter: "A",
+                riddle: "Üç kenarım, üç köşem var benim. İç açılarımın toplamı her zaman 180 derece eder. Geometrinin en temel üyesiyim, bilin bakalım kimim?",
+                hint: "Üç kenarı ve üç köşesi olan geometrik şekil.",
+                answers: ["ucgen"],
+                nextStationName: "Üçgen"
+            },
+            {
+                id: 3,
+                title: "Üçgen",
+                code: "UCGEN",
+                backupCode: "2003",
+                letter: "H",
+                riddle: "Çizgi çizerim düzgünce, boyumu ölçerim santim santim. Matematik çantamızın olmazsa olmazıyım, her çizimde benimdir yerim. Ben neyim?",
+                hint: "Düz çizgiler çizmeye ve uzunluk ölçmeye yarayan dereceli araç.",
+                answers: ["cetvel"],
+                nextStationName: "Cetvel"
+            },
+            {
+                id: 4,
+                title: "Cetvel",
+                code: "CETVEL",
+                backupCode: "2004",
+                letter: "İ",
+                riddle: "Renkli boncuklarım dizilidir tellere, hesap yaparım hızlıca kaydırarak ellerle. Eski zamanların hesap makinesiyim, bilin bakalım ben neyim?",
+                hint: "Sayı boncukları kullanarak toplama ve çarpma yapmaya yarayan eski araç.",
+                answers: ["abakus"],
+                nextStationName: "Abaküs"
+            },
+            {
+                id: 5,
+                title: "Abaküs",
+                code: "ABAKUS",
+                backupCode: "2005",
+                letter: "T",
+                riddle: "Açıları ölçerim derece derece, yarım daire şeklindeyim genellikle. Gönyenin en yakın kardeşiyim bu dünyada. Ben kimim?",
+                hint: "Açıları ölçmeye yarayan yarım daire biçimindeki araç, açıölçer.",
+                answers: ["iletki", "aciolcer", "aci olcer"],
+                nextStationName: "İletki"
+            },
+            {
+                id: 6,
+                title: "İletki",
+                code: "ILETKI",
+                backupCode: "2006",
+                letter: "A",
+                riddle: "Bir bütünü bölerim eşit parçalara, pay ve payda ile gösteririm kendimi her tarafta. Yarım ve çeyrek benimle anlam kazanır. Ben neyim?",
+                hint: "Bir bütünün eşit parçalarından birini veya birkaçını gösteren sayı, pay/payda çizgisiyle yazılır.",
+                answers: ["kesir", "kesirler"],
+                nextStationName: "Kesir"
+            },
+            {
+                id: 7,
+                title: "Kesir",
+                code: "KESIR",
+                backupCode: "2007",
+                letter: "R",
+                riddle: "Ortadan ikiye katlarsan beni, iki tarafım da tam eşleşir. Kelebeğin kanatlarında, aynanın yansımasında gizliyim. Ben hangi geometrik özelliğim?",
+                hint: "Bir şeklin bir doğruya göre katlandığında üst üste gelmesi durumu, eş ölçülülük.",
+                answers: ["simetri", "yansima"],
+                nextStationName: "Simetri Çubuğu"
+            },
+            {
+                id: 8,
+                title: "Simetri Çubuğu",
+                code: "SIMETRI",
+                backupCode: "2008",
+                letter: "F",
+                riddle: "Bölme işleminin kalanı sıfırsa, ben o sayının nesi olurum? Bir sayıyı tam bölen küçük sayılara verilen isimdir. Ben neyim?",
+                hint: "Bir sayıyı kalansız bölebilen sayılar, çarpanlar.",
+                answers: ["bolen", "carpan", "kat"],
+                nextStationName: "Final Anagramı"
+            },
+            {
+                id: 9,
+                title: "Final İstasyonu",
+                code: "MATH_FINAL",
+                backupCode: "2009",
+                letter: null,
+                riddle: "TÜM ŞİFRELERİ BAŞARI İLE ÇÖZDÜNÜZ, ŞİMDİ TOPLADIĞINIZ HARFLERİ BİRLEŞTİREREK GİZEMLİ MATEMATİKÇİYİ BULUNUZ",
+                hint: "Topladığın 8 harfi (C-A-H-İ-T-A-R-F) birleştirerek ünlü Türk matematikçinin adını yazmalısın.",
+                answers: ["cahit arf", "cahitarf"],
+                nextStationName: "BİTTİ"
+            }
+        ]
     },
-    {
-        id: 3,
-        title: "Telgraf",
-        code: "TELGRAF",
-        backupCode: "1003",
-        letter: "G",
-        riddle: "Işığım masadan doğar, perdeye düşer yüzüm. Saydam kağıtlar üstünde büyür her bir sözüm. Ben kimim?",
-        hint: "Asetat kağıdı üzerindeki şekilleri ışık yardımıyla duvara veya perdeye yansıtan eski projeksiyon cihazı.",
-        answers: ["tepegoz", "tepe goz"],
-        nextStationName: "Tepegöz"
+    fizik: {
+        name: "FİZİK",
+        badge: "⚛️ EVRENİN KODU",
+        iconClass: "fas fa-atom",
+        themeClass: "theme-fizik",
+        secretPhrase: "EINSTEIN",
+        welcomeTitle: "<span>GİZEMLİ</span>FİZİK",
+        welcomeSubtitle: "🕵️‍♂️ Kütle Çekim ve Enerji Dedektifliği ⚛️",
+        welcomeIntro: "Fizik dünyasının kalbinde, evrenin sırlarını çözen ünlü bir fizikçinin gizemli kuramı saklı! İstasyonları bul, bilmeceleri çöz, harfleri toplayıp dâhiyi açığa çıkar! ⚛️✨",
+        btnText: "FİZİĞİ KEŞFET! ⚛️🚀",
+        stations: [
+            {
+                id: 1,
+                title: "Fizik Başlangıç Noktası",
+                code: "PHYS_START",
+                backupCode: "3001",
+                letter: "E",
+                riddle: "Ağaçtan düşen elma bana yol gösterdi, gezegenleri yörüngede tutan bu büyük kuvvetti. Yere bastırırım seni görünmez ellerimle, bilin bakalım neyim?",
+                hint: "Kütlesi olan cisimlerin birbirini çekmesi kuvveti, Newton'ın bulduğu meşhur teori.",
+                answers: ["yercekimi", "yer cekimi", "kutlecekimi", "kutle cekimi"],
+                nextStationName: "Yer Çekimi"
+            },
+            {
+                id: 2,
+                title: "Yer Çekimi",
+                code: "YER_CEKIMI",
+                backupCode: "3002",
+                letter: "İ",
+                riddle: "Işığı kıran camdan bir gövdeyim, beyaz ışığı gökkuşağı renklerine bölerim. Optik laboratuvarının yıldızıyım, ben neyim?",
+                hint: "Işığı kıran, üçgen kesitli saydam cam blok.",
+                answers: ["prizma", "isik prizmasi", "isikprizmasi"],
+                nextStationName: "Işık Prizması"
+            },
+            {
+                id: 3,
+                title: "Işık Prizması",
+                code: "PRIZMA",
+                backupCode: "3003",
+                letter: "N",
+                riddle: "İki kutbum var, çekerim metalleri kendime. Pusulanın içinde saklıyım, yön gösteririm denizcilere. Ben kimim?",
+                hint: "Demir, nikel gibi maddeleri çeken, kuzey ve güney kutbu olan mıknatıslı taş.",
+                answers: ["miknatis"],
+                nextStationName: "Mıknatıs"
+            },
+            {
+                id: 4,
+                title: "Mıknatıs",
+                code: "MIKNATIS",
+                backupCode: "3004",
+                letter: "S",
+                riddle: "İnce kenarlı bir merceğim, cisimleri dev gibi gösteririm. Karıncaları incelerken çocukların elindeyim. Ben neyim?",
+                hint: "Cisimleri büyütmeye yarayan mercek, büyüteç.",
+                answers: ["buyutec"],
+                nextStationName: "Büyüteç"
+            },
+            {
+                id: 5,
+                title: "Büyüteç",
+                code: "BUYUTEC",
+                backupCode: "3005",
+                letter: "T",
+                riddle: "Kimyasal enerjiyi elektriğe çeviririm, el fenerine hayat veririm. Artı ve eksi uçlarımla devreye akım veririm. Ben neyim?",
+                hint: "Elektrik enerjisi depolayan küçük taşınabilir üreteç.",
+                answers: ["pil", "batarya"],
+                nextStationName: "Pil Yuvası"
+            },
+            {
+                id: 6,
+                title: "Pil Yuvası",
+                code: "PIL",
+                backupCode: "3006",
+                letter: "E",
+                riddle: "Sıcaklığı ölçerim derece derece, içimdeki sıvı (cıva) yükselir hava ısınınca. Hastalandığında ateşini de ölçerim. Ben neyim?",
+                hint: "Sıcaklık derecesini gösteren laboratuvar ölçüm aleti.",
+                answers: ["termometre"],
+                nextStationName: "Termometre"
+            },
+            {
+                id: 7,
+                title: "Termometre",
+                code: "TERMOMETRE",
+                backupCode: "3007",
+                letter: "İ",
+                riddle: "Cisimlerin titreşmesiyle doğarım, dalgalar halinde havada yayılırım. Kulağına müzik olur akarım. Ben neyim?",
+                hint: "Kulağın algılayabildiği fiziksel titreşim dalgaları.",
+                answers: ["ses", "ses dalgasi", "ses dalgalari"],
+                nextStationName: "Ses Dalgaları"
+            },
+            {
+                id: 8,
+                title: "Ses Dalgaları",
+                code: "SES_DALGASI",
+                backupCode: "3008",
+                letter: "N",
+                riddle: "Kanatlarımın altından alan hava basınç farkı yaratır, dev cüssemi gökyüzünde kuş gibi uçurur. Ben hangi aracım?",
+                hint: "Havanın kaldırma kuvvetiyle uçan dev yolcu veya savaş hava aracı.",
+                answers: ["ucak"],
+                nextStationName: "Final Anagramı"
+            },
+            {
+                id: 9,
+                title: "Final İstasyonu",
+                code: "PHYS_FINAL",
+                backupCode: "3009",
+                letter: null,
+                riddle: "TÜM ŞİFRELERİ BAŞARI İLE ÇÖZDÜNÜZ, ŞİMDİ TOPLADIĞINIZ HARFLERİ BİRLEŞTİREREK GİZEMLİ FİZİKÇİYİ BULUNUZ",
+                hint: "Topladığın 8 harfi (E-İ-N-S-T-E-İ-N) karıştırarak modern fiziğin dâhisi olan bilim insanının adını yazmalısın.",
+                answers: ["einstein", "albert einstein", "alberteinstein"],
+                nextStationName: "BİTTİ"
+            }
+        ]
     },
-    {
-        id: 4,
-        title: "Tepegöz",
-        code: "TEPEGOZ",
-        backupCode: "1004",
-        letter: "O",
-        riddle: "Sayılar dostum benim, işlemlerle konuşurum. Toplar, çıkarır, çarparım; en zor hesabı hemen bulurum. Ben neyim?",
-        hint: "Matematiksel işlemleri tuşlarına basarak saniyeler içinde yapan küçük elektronik alet.",
-        answers: ["hesap makinesi", "hesapmakinesi"],
-        nextStationName: "Hesap Makinesi"
+    bilisim: {
+        name: "BİLİŞİM & YAZILIM",
+        badge: "💻 SİBER BULMACA",
+        iconClass: "fas fa-microchip",
+        themeClass: "theme-bilisim",
+        secretPhrase: "ALAN TURING",
+        welcomeTitle: "<span>SİBER</span>BULMACA",
+        welcomeSubtitle: "🕵️‍♂️ Yapay Zeka ve Algoritma Dedektifliği 💻",
+        welcomeIntro: "Bilgisayar ağlarının derinliklerinde, yapay zekanın babası kabul edilen gizemli bir matematikçinin şifreleri saklı! İstasyonları bul, kodları çöz, dâhiyi ortaya çıkar! 💻✨",
+        btnText: "SİSTEME SIZ! 💻🚀",
+        stations: [
+            {
+                id: 1,
+                title: "Bilişim Başlangıç Noktası",
+                code: "COMP_START",
+                backupCode: "4001",
+                letter: "A",
+                riddle: "Bilgisayarlar sadece iki sayıyı tanır: 0 ve 1. Bu sayılarla yazılan gizemli kod diline ne ad verilir?",
+                hint: "Bilgisayarların temel çalışma sistemi olan 0 ve 1'lerden oluşan ikili sayı sistemi.",
+                answers: ["ikili kod", "binary", "ikili sayi sistemi", "binary kod"],
+                nextStationName: "Binary İstasyonu"
+            },
+            {
+                id: 2,
+                title: "Binary İstasyonu",
+                code: "BINARY",
+                backupCode: "4002",
+                letter: "L",
+                riddle: "Bilgisayarın beyniyim ben, tüm aritmetik ve mantık hesaplarını saniyeler içinde yaparım. Benim adım kısaca nedir?",
+                hint: "Merkezi İşlem Birimi olarak da bilinen, bilgisayarın beyni olan 3 harfli mikroçip.",
+                answers: ["islemci", "cpu"],
+                nextStationName: "İşlemci"
+            },
+            {
+                id: 3,
+                title: "İşlemci",
+                code: "CPU",
+                backupCode: "4003",
+                letter: "A",
+                riddle: "Görüntüleri aktarırım cam ekranıma, ekran kartından aldığım sinyallerle renk veririm dünyaya. Ben hangi donanımım?",
+                hint: "Bilgisayarın görüntü çıkış birimi, ekran.",
+                answers: ["monitor", "ekran"],
+                nextStationName: "Monitör"
+            },
+            {
+                id: 4,
+                title: "Monitör",
+                code: "MONITOR",
+                backupCode: "4004",
+                letter: "N",
+                riddle: "Tuşlarım dizilidir yan yana, Q ve F diye ayrılırım sınıflara. Bilgisayara yazı yazmanı sağlarım. Ben neyim?",
+                hint: "Üzerinde harfler, sayılar ve özel işaretler bulunan giriş birimi.",
+                answers: ["klavye"],
+                nextStationName: "Klavye"
+            },
+            {
+                id: 5,
+                title: "Klavye",
+                code: "KLAVYE",
+                backupCode: "4005",
+                letter: "T",
+                riddle: "Ekranda gezinirim bir ok şeklinde, tıklarım menülere. İsmim de benzer sevimli bir kemirgene. Ben neyim?",
+                hint: "Ekrandaki imleci hareket ettirmeye yarayan avuç içi büyüklüğündeki araç.",
+                answers: ["fare", "mouse"],
+                nextStationName: "Fare Altlığı"
+            },
+            {
+                id: 6,
+                title: "Fare Altlığı",
+                code: "MOUSE",
+                backupCode: "4006",
+                letter: "U",
+                riddle: "Tüm dünyayı birbirine bağlayan devasa bir bilgisayar ağıyım ben. Web siteleri, oyunlar hep benim içimde yaşar. Ben kimim?",
+                hint: "Küresel bilgisayar ağı, bilgi okyanusu.",
+                answers: ["internet"],
+                nextStationName: "Modem"
+            },
+            {
+                id: 7,
+                title: "Modem",
+                code: "INTERNET",
+                backupCode: "4007",
+                letter: "R",
+                riddle: "Hesaplarınızı korurum kötü niyetli kişilerden. Harfler, sayılar ve semboller içeririm gizlice. Kimseyle paylaşmaman gerekir beni. Ben neyim?",
+                hint: "Bir hesaba girmek için kullanılan gizli güvenlik kelimesi, parola.",
+                answers: ["sifre", "parola"],
+                nextStationName: "Şifre Kilidi"
+            },
+            {
+                id: 8,
+                title: "Şifre Kilidi",
+                code: "SIFRE",
+                backupCode: "4008",
+                letter: "İ",
+                riddle: "Bir problemi çözmek için takip edilen adım adım yoldur adım. Bilgisayarlar benimle çalışır, Scratch'te blokları sırayla dizerek beni kurarsın. Ben neyim?",
+                hint: "Programlamanın temel mantığı olan adım adım işlem akışı.",
+                answers: ["algoritma"],
+                nextStationName: "Algoritma Levhası"
+            },
+            {
+                id: 9,
+                title: "Algoritma Levhası",
+                code: "ALGORITMA",
+                backupCode: "4009",
+                letter: "N",
+                riddle: "Metal ve elektronik gövdem var, kodlarla canlanırım. Fabrikalarda çalışır, evleri süpürürüm. Geleceğin akıllı makinesiyim. Ben neyim?",
+                hint: "Sensörler yardımıyla çevresini algılayıp kodlandığı şekilde hareket eden otonom makine.",
+                answers: ["robot"],
+                nextStationName: "Robot Standı"
+            },
+            {
+                id: 10,
+                title: "Robot Standı",
+                code: "ROBOT",
+                backupCode: "4010",
+                letter: "G",
+                riddle: "Bilgisayara ne yapacağını söyleyen satır satır komutlar bütünüdür adım. Python, C++, HTML benimle yazılır. Ben neyim?",
+                hint: "Bilgisayar programlarını oluşturan kod dizeleri.",
+                answers: ["kod", "yazilim", "program"],
+                nextStationName: "Final Anagramı"
+            },
+            {
+                id: 11,
+                title: "Final İstasyonu",
+                code: "COMP_FINAL",
+                backupCode: "4011",
+                letter: null,
+                riddle: "TÜM ŞİFRELERİ BAŞARI İLE ÇÖZDÜNÜZ, ŞİMDİ TOPLADIĞINIZ HARFLERİ BİRLEŞTİREREK GİZEMLİ BİLGİSAYAR DAHİSİNİ BULUNUZ",
+                hint: "Topladığın 10 harfi (A-L-A-N-T-U-R-İ-N-G) birleştirerek bilgisayar biliminin babası olan ünlü dâhinin adını yazmalısın.",
+                answers: ["alan turing", "alanturing"],
+                nextStationName: "BİTTİ"
+            }
+        ]
     },
-    {
-        id: 5,
-        title: "Hesap Makinesi",
-        code: "HESAP",
-        backupCode: "1005",
-        letter: "L",
-        riddle: "Kefede susar sözüm, dengeyle benim işim. Kütleleri ölçerken, pirinçten dökülmüş küçük kardeşlerimdir yoldaşım. Ben neyim?",
-        hint: "Eşit kollu terazilerde ağırlığı dengelemek için kefeye konulan farklı gramajlardaki metal kütleler.",
-        answers: ["agirlik takimi", "agirliktakimi", "agirliklar", "agirlik"],
-        nextStationName: "Ağırlık Takımı"
+    sosyal: {
+        name: "SOSYAL BİLGİLER",
+        badge: "🗺️ DÜNYA KEŞFİ",
+        iconClass: "fas fa-compass",
+        themeClass: "theme-sosyal",
+        secretPhrase: "PİRİ REİS",
+        welcomeTitle: "<span>GİZEMLİ</span>KEŞİF",
+        welcomeSubtitle: "🕵️‍♂️ Tarih, Coğrafya ve Harita Dedektifliği 🗺️",
+        welcomeIntro: "Coğrafi keşiflerin gizemli dünyasında, yüzyıllar önce ceylan derisine çizdiği haritayla dünyayı hayrete düşüren dâhi denizcinin sırları saklı! Harfleri topla ve gizemi çöz! 🗺️✨",
+        btnText: "KEŞFE BAŞLA! 🗺️🚀",
+        stations: [
+            {
+                id: 1,
+                title: "Sosyal Başlangıç Noktası",
+                code: "SOC_START",
+                backupCode: "5001",
+                letter: "P",
+                riddle: "Yeryüzünü kuşbakışı çizerim kağıda, ölçek kullanarak küçültürüm odalara. Dağları kahverengi, denizleri mavi boyarım. Ben neyim?",
+                hint: "Yeryüzünün tamamının veya bir parçasının kuşbakışı görünümünün ölçekle küçültülerek düzleme aktarılması.",
+                answers: ["harita"],
+                nextStationName: "Harita Odası"
+            },
+            {
+                id: 2,
+                title: "Harita Odası",
+                code: "HARITA",
+                backupCode: "5002",
+                letter: "İ",
+                riddle: "Mıknatıslı iğnem hep kuzeyi gösterir, fırtınalı denizlerde gemilere yol gösterir. Çin'de icat edildim, yönlerin efendisiyim. Ben neyim?",
+                hint: "Yön bulmaya yarayan, kadranı üzerinde kuzeyi gösteren mıknatıslı iğnesi olan alet.",
+                answers: ["pusula"],
+                nextStationName: "Pusula Standı"
+            },
+            {
+                id: 3,
+                title: "Pusula Standı",
+                code: "PUSULA",
+                backupCode: "5003",
+                letter: "R",
+                riddle: "Nil Nehri kıyısında yetişen bir sazlıktan üretildim, üzerine hiyeroglif yazılar yazdı eski Mısırlılar. Kağıdın atası sayılırım. Ben neyim?",
+                hint: "Eski Mısır'da kullanılan sazlıktan elde edilen eski kağıt türü.",
+                answers: ["papirus"],
+                nextStationName: "Papirüs Rulosu"
+            },
+            {
+                id: 4,
+                title: "Papirüs Rulosu",
+                code: "PAPIRUS",
+                backupCode: "5004",
+                letter: "İ",
+                riddle: "Taştan dev üçgenlerim ben, Firavunların mezarlarını korurum çöllerde. Dünyanın yedi harikasından biriyim. Ben neyim?",
+                hint: "Mısır'da bulunan dev taş anıt mezarlar.",
+                answers: ["piramit", "misir piramitleri"],
+                nextStationName: "Piramit Maketi"
+            },
+            {
+                id: 5,
+                title: "Piramit Maketi",
+                code: "PIRAMIT",
+                backupCode: "5005",
+                letter: "R",
+                riddle: "Dünyanın küçük bir modeliyim, eksenimde dönerim süzüle süzüle. Üzerimde okyanuslar, kıtalar çizilidir renk renk. Ben neyim?",
+                hint: "Dünyanın küre şeklindeki küçük modeli.",
+                answers: ["yerkure", "kure", "dunya kuresi"],
+                nextStationName: "Dünya Küresi"
+            },
+            {
+                id: 6,
+                title: "Dünya Küresi",
+                code: "YERKURE",
+                backupCode: "5006",
+                letter: "E",
+                riddle: "Günleri, haftaları, ayları yazarım; zamanı yaprak yaprak duvarlardan atarım. Miladi ve Hicri türlerim vardır. Ben neyim?",
+                hint: "Zamanı gün, ay, yıl olarak gösteren çizelge/yapraklı duvar aleti.",
+                answers: ["takvim"],
+                nextStationName: "Tarihi Takvim"
+            },
+            {
+                id: 7,
+                title: "Tarihi Takvim",
+                code: "TAKVIM",
+                backupCode: "5007",
+                letter: "İ",
+                riddle: "Toprağın altındaki tarihi uygarlıkları kazarım, çanak çömlekleri bulup geçmişi gün yüzüne çıkarırım. Ben hangi bilim dalıyım?",
+                hint: "Kazı bilimi.",
+                answers: ["arkeoloji", "arkeolog"],
+                nextStationName: "Kazı Alanı"
+            },
+            {
+                id: 8,
+                title: "Kazı Alanı",
+                code: "ARKEOLOJI",
+                backupCode: "5008",
+                letter: "S",
+                riddle: "Lidyalılar icat etti beni ticarette kullanmak için, altın ve metalden döküldüm takas usulü bitsin diye. Ben neyim?",
+                hint: "Değer ölçüsü olarak kullanılan madeni veya kağıt ödeme aracı.",
+                answers: ["para", "sikke"],
+                nextStationName: "Final Anagramı"
+            },
+            {
+                id: 9,
+                title: "Final İstasyonu",
+                code: "SOC_FINAL",
+                backupCode: "5009",
+                letter: null,
+                riddle: "TÜM ŞİFRELERİ BAŞARI İLE ÇÖZDÜNÜZ, ŞİMDİ TOPLADIĞINIZ HARFLERİ BİRLEŞTİREREK ÜNLÜ OSMANLI DENİZCİSİNİ BULUNUZ",
+                hint: "Topladığın 8 harfi (P-İ-R-İ-R-E-İ-S) birleştirerek Kitab-ı Bahriye'nin yazarı ünlü Osmanlı denizcisinin adını yazmalısın.",
+                answers: ["piri reis", "pirireis"],
+                nextStationName: "BİTTİ"
+            }
+        ]
     },
-    {
-        id: 6,
-        title: "Ağırlık Takımı",
-        code: "AGIRLIK",
-        backupCode: "1006",
-        letter: "L",
-        riddle: "Yay gerilir içimde, kuvvetle sırdaş olurum. Newton'dur birimim benim, ağırlığı onunla bulurum. Ben neyim?",
-        hint: "İçindeki sarmal yayın esnemesiyle kuvvet veya ağırlık ölçen alet.",
-        answers: ["dinamometre", "kuvvetolcer", "kuvvet olcer"],
-        nextStationName: "Dinamometre"
-    },
-    {
-        id: 7,
-        title: "Dinamometre",
-        code: "DINAMO",
-        backupCode: "1007",
-        letter: "İ",
-        riddle: "Küçük ateşimle ısıtırım her şeyi, içinde mavi sıvı parlar gizemli. Deney tüplerinin dostuyum ben, bilin bakalım kimim?",
-        hint: "Mavi ispirto yakıtıyla çalışan, laboratuvarda ısıtma deneylerinde kullanılan küçük ocak.",
-        answers: ["ispirto ocagi", "ispirtoocagi"],
-        nextStationName: "İspirto Ocağı"
-    },
-    {
-        id: 8,
-        title: "İspirto Ocağı",
-        code: "ISPIRTO",
-        backupCode: "1008",
-        letter: "L",
-        riddle: "Cam gözümle bakarım, görünmeyeni görürüm. Hücrelerin dünyasına yolculuklar ettiririm. Ben neyim?",
-        hint: "Gözle görülemeyecek kadar küçük canlıları veya yapıları mercekleriyle büyüterek gösteren optik cihaz.",
-        answers: ["mikroskop", "isikmikroskobu"],
-        nextStationName: "Mikroskop"
-    },
-    {
-        id: 9,
-        title: "Mikroskop",
-        code: "MIKROSKOP",
-        backupCode: "1009",
-        letter: "A",
-        riddle: "Işığı eğip büker, bazen odakta birleştirir. İnce ve kalın kenarlıyım, görüntüleri değiştiririm. Biz kimiz?",
-        hint: "Gözlüklerde, büyüteçlerde kullanılan, ışığı kıran saydam cam takımı.",
-        answers: ["mercek takimi", "mercekler", "mercektakimi", "mercek"],
-        nextStationName: "Mercek Takımı"
-    },
-    {
-        id: 10,
-        title: "Mercek Takımı",
-        code: "MERCEK",
-        backupCode: "1010",
-        letter: "A",
-        riddle: "İki kap yan yana, içi dolu suyla. Tabanları birleşir, seviyeler eşitlenir aynı anda. Biz kimiz?",
-        hint: "Tabanları bir boruyla birleştirilmiş, sıvı seviyelerinin her kolda eşit olmasını sağlayan kaplar düzeneği.",
-        answers: ["bilesik kaplar", "bilesikkaplar", "bilesik kap"],
-        nextStationName: "Bileşik Kaplar"
-    },
-    {
-        id: 11,
-        title: "Bileşik Kaplar",
-        code: "BILESIK",
-        backupCode: "1011",
-        letter: "L",
-        riddle: "Görüntüyü büyütürüm, bazen de ters çeviririm. Kaşığın iç yüzü gibiyim, ışığı odakta eritirim. Ben hangi aynayım?",
-        hint: "Yansıtıcı yüzeyi küresel bir çukur olan, cisimleri dev ve ters gösterebilen ayna tipi.",
-        answers: ["cukur ayna", "cukurayna", "konkav ayna"],
-        nextStationName: "Çukur Ayna"
-    },
-    {
-        id: 12,
-        title: "Çukur Ayna",
-        code: "AYNA",
-        backupCode: "1012",
-        letter: "E",
-        riddle: "Küçük tüpler sıra olur içimde. Laboratuvarda dik dururlar, kırılmasınlar diye güvende tutarım. Ben neyim?",
-        hint: "Deney tüplerinin dik durmasını sağlayan, ahşap, plastik veya metalden yapılmış tüp standı.",
-        answers: ["tupluk", "tup rafi", "tuprafi", "tup standi", "tupstandi"],
-        nextStationName: "Tüplük"
-    },
-    {
-        id: 13,
-        title: "Tüplük",
-        code: "TUPLUK",
-        backupCode: "1013",
-        letter: "G",
-        riddle: "Kaynar suyun nefesi, göğe çıkar incecik. Soğuk camda yoğunlaşır, damlar berrak ve temizce. Ben hangi düzeneğim?",
-        hint: "Sıvı karışımları kaynatıp buharlaştırarak ve ardından yoğuşturarak saflaştıran laboratuvar düzeneği.",
-        answers: ["damitma duzenegi", "damitmaduzenegi", "damitma imbigi", "damitma"],
-        nextStationName: "Damıtma Düzeneği"
-    },
-    {
-        id: 14,
-        title: "Damıtma Düzeneği",
-        code: "DAMITMA",
-        backupCode: "1014",
-        letter: null, // Bu adımda da harf yok
-        riddle: "Akım bana uğrar, bazen hızlı bazen yavaş. Direnci ayarlarım sürgümle yavaş yavaş. Ben kimim?",
-        hint: "Elektrik devrelerinde direnci el yardımıyla değiştirerek akım şiddetini ayarlayan ayarlı direnç.",
-        answers: ["reosta", "ayarli direnc", "ayarlidirenc"],
-        nextStationName: "Reosta"
-    },
-    {
-        id: 15,
-        title: "Reosta",
-        code: "REOSTA",
-        backupCode: "1015",
-        letter: "İ",
-        riddle: "Renklerim çeşit çeşit, sertliğim değişken. Yer kabuğunun süsüyüm, doğada saklanırken. Biz neyiz?",
-        hint: "Taşları ve kayaçları oluşturan, doğada kristal yapıda bulunan kimyasal bileşikler serisi.",
-        answers: ["mineral seti", "mineraller", "mineralseti", "mineral"],
-        nextStationName: "Mineral Seti"
-    },
-    {
-        id: 16,
-        title: "Mineral Seti",
-        code: "MINERAL",
-        backupCode: "1016",
-        letter: "L",
-        riddle: "Enerjiyi ben veririm, hayat bulur devreler. Prizden gelen gücü, lambaya ulaştırırım güvenle. Ben neyim?",
-        hint: "Elektrik devrelerine istenen voltajda akım sağlayan laboratuvar güç cihazı.",
-        answers: ["guc kaynagi", "guckaynagi", "adaptor"],
-        nextStationName: "Güç Kaynağı"
-    },
-    {
-        id: 17,
-        title: "Güç Kaynağı",
-        code: "GUC",
-        backupCode: "1017",
-        letter: "E",
-        riddle: "Laboratuvarda sessizim, ama elim iş tutar. Kıskaçları taşırım sırtımda, düzeneği ayakta tutarım. Ben neyim?",
-        hint: "Deney tüplerini, balonları veya reaksiyon kaplarını kıskaçla sabitlediğimiz dikey demir çubuklu laboratuvar standı.",
-        answers: ["destek cubugu", "destekcubugu", "laboratuvar destegi", "laboratuvardestegi"],
-        nextStationName: "Destek Çubuğu"
-    },
-    {
-        id: 18,
-        title: "Destek Çubuğu (Final)",
-        code: "DESTEK",
-        backupCode: "1018",
-        letter: null, // Final istasyonu kendisi
-        riddle: "TÜM ŞİFRELERİ BAŞARI İLE ÇÖZDÜNÜZ, ŞİMDİ TOPLADIĞINIZ HARFLERİ BİRLEŞTİREREK KAYIP BİLİM ADAMINI BULUNUZ",
-        hint: "Elde ettiğin 15 harfi karıştırarak yüzyıllar önce yaşamış olan modern bilimin kurucusu dahi bilim insanının adını bulmalısın.",
+    edebiyat: {
+        name: "EDEBİYAT & TÜRKÇE",
+        badge: "✍️ KELİMELERİN SIRRI",
+        iconClass: "fas fa-feather-pointed",
+        themeClass: "theme-edebiyat",
+        secretPhrase: "YUNUS EMRE",
+        welcomeTitle: "<span>GİZEMLİ</span>KELİMELER",
+        welcomeSubtitle: "🕵️‍♂️ Kelimeler, Şiirler ve Hikayeler Dedektifliği ✍️",
+        welcomeIntro: "Türkçenin ve edebiyatın büyüleyici dünyasında, asırlar önce sevgi ve hoşgörüyle Türkçe şiirler söyleyen dâhi bir halk şairinin dizeleri gizli! Şifreleri çöz, harfleri toplayıp dâhiyi bul! ✍️✨",
+        btnText: "YAZIMA BAŞLA! ✍️🚀",
+        stations: [
+            {
+                id: 1,
+                title: "Edebiyat Başlangıç Noktası",
+                code: "LIT_START",
+                backupCode: "6001",
+                letter: "Y",
+                riddle: "Harflerim dizilir yan yana A'dan Z'ye, kelimeler kurarsın beni öğrenerek keyifle. Türkçede 29 üyem var. Ben neyim?",
+                hint: "Bir dilin seslerini gösteren harflerin belli bir sıraya göre dizilmiş bütünü, abece.",
+                answers: ["alfabe", "abece"],
+                nextStationName: "Alfabe Duvarı"
+            },
+            {
+                id: 2,
+                title: "Alfabe Duvarı",
+                code: "ALFABE",
+                backupCode: "6002",
+                letter: "U",
+                riddle: "Sayfalarca sürer hikayem, olaylar ve karakterler derinlemesine yaşar içimde. Kalın kapaklı kütüphane dostuyum. Hikayenin en uzun haliyim. Ben hangi tür kitabım?",
+                hint: "Olmuş veya olması mümkün olayları yer, zaman ve kişi belirterek genişçe anlatan edebi tür.",
+                answers: ["roman"],
+                nextStationName: "Roman Kitaplığı"
+            },
+            {
+                id: 3,
+                title: "Roman Kitaplığı",
+                code: "ROMAN",
+                backupCode: "6003",
+                letter: "N",
+                riddle: "Mısralarım alt alta dizilir, duygularım kafiyelerle (uyak) bezenir. Şairlerin yüreğinden dökülen dörtlüklere ne ad verilir?",
+                hint: "Zengin duygularla yazılan, mısralardan (dizelerden) oluşan edebi eser.",
+                answers: ["siir"],
+                nextStationName: "Şiir Kürsüsü"
+            },
+            {
+                id: 4,
+                title: "Şiir Kürsüsü",
+                code: "SIIR",
+                backupCode: "6004",
+                letter: "U",
+                riddle: "Atalarımızın derin tecrübelerinden süzülen, kimin söylediği belli olmayan, kalıplaşmış bilgece sözleriz. Biz kimiz?",
+                hint: "Öğüt veren anonim eski bilge sözleri (Örn: Damlaya damlaya göl olur).",
+                answers: ["atasozu", "atasozleri"],
+                nextStationName: "Atasözü Panosu"
+            },
+            {
+                id: 5,
+                title: "Atasözü Panosu",
+                code: "ATASOZU",
+                backupCode: "6005",
+                letter: "S",
+                riddle: "Sorular sorarım eğlenceli ve kafiyeli, cevabımı bulmak için düşünmelisin derinli. 'Pazardan aldım bir tane, eve geldim bin tane' benim bir örneğimdir. Ben neyim?",
+                hint: "Bir şeyin adını anmadan, bazı özelliklerini ipucu vererek buldurmayı amaçlayan oyunlu soru.",
+                answers: ["bilmece"],
+                nextStationName: "Bilmece Kartları"
+            },
+            {
+                id: 6,
+                title: "Bilmece Kartları",
+                code: "BILMECE",
+                backupCode: "6006",
+                letter: "E",
+                riddle: "Binlerce kitabın yuvasıyım ben, sessizce okunur sayfalarım içimde. Araştırma ödevlerinin en güvenli adresi, sessizlik mabediyim. Ben neresiyim?",
+                hint: "Kitapların korunduğu, sınıflara ayrılıp okuyuculara sunulduğu bina veya oda.",
+                answers: ["kutuphane"],
+                nextStationName: "Kütüphane Rafı"
+            },
+            {
+                id: 7,
+                title: "Kütüphane Rafı",
+                code: "KUTUPHANE",
+                backupCode: "6007",
+                letter: "M",
+                riddle: "Sahnede canlanır karakterler, perde açılır alkışlar yükselir. Oyuncular rolünü oynar canlı canlı seyirci önünde. Ben hangi sanat dalıyım?",
+                hint: "Sahnede, seyirciler önünde oyuncuların sergilemesi amacıyla yazılmış oyun sanatı.",
+                answers: ["tiyatro"],
+                nextStationName: "Tiyatro Sahnesi"
+            },
+            {
+                id: 8,
+                title: "Tiyatro Sahnesi",
+                code: "TIYATRO",
+                backupCode: "6008",
+                letter: "R",
+                riddle: "Kelimelerin anlamlarını saklarım içimde, A'dan Z'ye sıralarım onları düzenle. Anlamını bilmediğin kelimede ilk bana bakarsın. Ben neyim?",
+                hint: "Bir dilin bütün veya bir kısım kelimelerini alfabe sırasıyla veren, anlamlarını açıklayan kitap.",
+                answers: ["sozluk"],
+                nextStationName: "Büyük Sözlük"
+            },
+            {
+                id: 9,
+                title: "Büyük Sözlük",
+                code: "SOZLUK",
+                backupCode: "6009",
+                letter: "E",
+                riddle: "İçimdeki sıvı mürekkeple yazarım kağıda, metal ucumla şekil veririm güzel yazılara. Mektupların ve imzaların yoldaşıyım. Ben hangi kalemim?",
+                hint: "Mürekkebi içine doldurularak kullanılan hazneli metal uçlu kalem.",
+                answers: ["dolmakalem", "dolma kalem"],
+                nextStationName: "Final Anagramı"
+            },
+            {
+                id: 10,
+                title: "Final İstasyonu",
+                code: "LIT_FINAL",
+                backupCode: "6010",
+                letter: null,
+                riddle: "TÜM ŞİFRELERİ BAŞARI İLE ÇÖZDÜNÜZ, ŞİMDİ TOPLADIĞINIZ HARFLERİ BİRLEŞTİREREK BÜYÜK HALK ŞAİRİNİ BULUNUZ",
+                hint: "Topladığın 9 harfi (Y-U-N-U-S-E-M-R-E) birleştirerek 'Sevelim sevilelim, dünya kimseye kalmaz' diyen dâhi tasavvuf şairini bulmalısın.",
+                answers: ["yunus emre", "yunusemre"],
+                nextStationName: "BİTTİ"
+            }
+        ]
+    }
+};bilimin kurucusu dahi bilim insanının adını bulmalısın.",
         answers: ["galileo galilei", "galileogalilei"],
         nextStationName: "BİTTİ"
     }
@@ -496,84 +1105,19 @@ class ConfettiEngine {
                 gravity: 0.18,
                 rotation: Math.random() * 360,
                 rotationSpeed: (Math.random() - 0.5) * 10
-            });
-        }
-        
-        this.animate();
-    }
-
-    animate() {
-        if (!this.active) return;
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        let alive = false;
-        
-        this.particles.forEach((p) => {
-            p.speedY += p.gravity;
-            p.x += p.speedX;
-            p.y += p.speedY;
-            p.rotation += p.rotationSpeed;
-            
-            if (p.y < this.canvas.height) {
-                alive = true;
-            }
-            
-            this.ctx.save();
-            this.ctx.translate(p.x, p.y);
-            this.ctx.rotate((p.rotation * Math.PI) / 180);
-            this.ctx.fillStyle = p.color;
-            this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-            this.ctx.restore();
-        });
-        
-        if (alive) {
-            requestAnimationFrame(() => this.animate());
-        } else {
-            this.active = false;
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        }
-    }
-}
-
-const confetti = new ConfettiEngine();
-
-// ==========================================================================
-// 5. METİN NORMALİZE ETME MOTORU (Typo & Accent Tolerant Matcher)
-// ==========================================================================
-function normalizeTurkish(str) {
-    if (!str) return "";
-    
-    let text = str.trim();
-    // I/İ uyumsuzluklarını ve küçük harf karmaşasını çöz
-    text = text.replace(/I/g, 'ı').replace(/İ/g, 'i').toLowerCase();
-    
-    // Boşlukları temizle
-    text = text.replace(/\s+/g, '');
-    
-    // Türkçe karakterleri Latin karakterlerine haritala
-    const map = {
-        'ç': 'c',
-        'ğ': 'g',
-        'ı': 'i',
-        'ö': 'o',
-        'ş': 's',
-        'ü': 'u'
-    };
-    
-    return text.split('').map(c => map[c] || c).join('');
-}
-
-// ==========================================================================
-// 6. ANA MACERA KONTROL MOTORU (Linear Game Controller & Storage)
-// ==========================================================================
-class ScavengerEscapeGame {
+     class ScavengerEscapeGame {
     constructor() {
         this.state = {
             teamName: '',
-            currentStep: 1, // Hangi istasyonda olduğumuz (1 - 18 arası)
-            solvedStations: [], // Çözülen istasyonların ID'leri
-            activeRiddleId: null, // Kamerayla taranıp açılmış, çözülmeyi bekleyen istasyon
-            startTime: null,
-            endTime: null,
+            activeSubject: null,
+            subjects: {
+                kimya: { currentStep: 1, solvedStations: [], activeRiddleId: null, startTime: null, endTime: null },
+                matematik: { currentStep: 1, solvedStations: [], activeRiddleId: null, startTime: null, endTime: null },
+                fizik: { currentStep: 1, solvedStations: [], activeRiddleId: null, startTime: null, endTime: null },
+                bilisim: { currentStep: 1, solvedStations: [], activeRiddleId: null, startTime: null, endTime: null },
+                sosyal: { currentStep: 1, solvedStations: [], activeRiddleId: null, startTime: null, endTime: null },
+                edebiyat: { currentStep: 1, solvedStations: [], activeRiddleId: null, startTime: null, endTime: null }
+            },
             soundMuted: false
         };
         
@@ -589,9 +1133,31 @@ class ScavengerEscapeGame {
         this.updateSoundButtonUI();
     }
 
+    // Dyn getters for current stations and secret word based on active subject
+    get activeStations() {
+        const sub = this.state.activeSubject || 'kimya';
+        return SUBJECTS_DATA[sub].stations;
+    }
+
+    get activeSecretPhrase() {
+        const sub = this.state.activeSubject || 'kimya';
+        return SUBJECTS_DATA[sub].secretPhrase;
+    }
+
+    get activeSubState() {
+        const sub = this.state.activeSubject || 'kimya';
+        if (!this.state.subjects) {
+            this.state.subjects = {};
+        }
+        if (!this.state.subjects[sub]) {
+            this.state.subjects[sub] = { currentStep: 1, solvedStations: [], activeRiddleId: null, startTime: null, endTime: null };
+        }
+        return this.state.subjects[sub];
+    }
+
     // LocalStorage İlerlemeyi Yükle
     loadState() {
-        const saved = localStorage.getItem('escape_scavenger_state');
+        const saved = localStorage.getItem('escape_scavenger_state_v2');
         if (saved) {
             try {
                 this.state = JSON.parse(saved);
@@ -601,42 +1167,90 @@ class ScavengerEscapeGame {
             }
         }
         
-        // Oyun tamamen bitmişse tebrik ekranı
-        if (this.state.endTime && this.state.solvedStations.length === STATIONS.length) {
-            this.showScreen('victory-screen');
-            this.renderVictoryScreen();
-        } else if (this.state.teamName) {
-            this.showScreen('game-screen');
-            this.setupGameUI();
+        // Dynamic routing based on active subject
+        if (this.state.activeSubject) {
+            this.applySubjectTheme(this.state.activeSubject);
+            const subState = this.activeSubState;
+            const STATIONS = this.activeStations;
+            
+            if (subState.endTime && subState.solvedStations.length === STATIONS.length) {
+                this.showScreen('victory-screen');
+                this.renderVictoryScreen();
+            } else if (this.state.teamName) {
+                this.showScreen('game-screen');
+                this.setupGameUI();
+            } else {
+                this.showScreen('welcome-screen');
+                this.setupWelcomeScreenUI();
+            }
         } else {
-            this.showScreen('welcome-screen');
+            this.showScreen('category-selection-screen');
         }
     }
 
     saveState() {
-        localStorage.setItem('escape_scavenger_state', JSON.stringify(this.state));
+        localStorage.setItem('escape_scavenger_state_v2', JSON.stringify(this.state));
     }
 
     resetGame() {
-        localStorage.removeItem('escape_scavenger_state');
-        this.state = {
-            teamName: '',
-            currentStep: 1,
-            solvedStations: [],
-            activeRiddleId: null,
-            startTime: null,
-            endTime: null,
-            soundMuted: sound.muted
-        };
+        const sub = this.state.activeSubject || 'kimya';
+        if (this.state.subjects && this.state.subjects[sub]) {
+            this.state.subjects[sub] = {
+                currentStep: 1,
+                solvedStations: [],
+                activeRiddleId: null,
+                startTime: null,
+                endTime: null
+            };
+        }
         this.saveState();
         
-        document.getElementById('team-name-input').value = '';
         document.getElementById('riddle-answer-input').value = '';
         document.getElementById('manual-code-input').value = '';
         
         this.stopScanner();
         document.getElementById('teacher-modal').classList.remove('active');
-        this.showScreen('welcome-screen');
+        
+        if (this.state.teamName) {
+            this.showScreen('game-screen');
+            this.setupGameUI();
+        } else {
+            this.showScreen('welcome-screen');
+            this.setupWelcomeScreenUI();
+        }
+    }
+
+    applySubjectTheme(subject) {
+        const mockup = document.querySelector('.phone-mockup');
+        if (mockup) {
+            mockup.classList.remove('theme-kimya', 'theme-matematik', 'theme-fizik', 'theme-bilisim', 'theme-sosyal', 'theme-edebiyat');
+            const themeClass = SUBJECTS_DATA[subject]?.themeClass || 'theme-kimya';
+            mockup.classList.add(themeClass);
+        }
+        
+        // Sync teacher dropdown select to active subject if user is teacher
+        const select = document.getElementById('teacher-subject-select');
+        if (select) {
+            select.value = subject;
+        }
+    }
+
+    setupWelcomeScreenUI() {
+        const sub = this.state.activeSubject || 'kimya';
+        const data = SUBJECTS_DATA[sub];
+        if (!data) return;
+
+        document.getElementById('welcome-badge').innerText = `🕵️‍♂️ ${data.badge}`;
+        const portalIcon = document.getElementById('welcome-portal-icon');
+        if (portalIcon) {
+            portalIcon.className = `${data.iconClass} portal-icon`;
+        }
+        
+        document.getElementById('welcome-game-title').innerHTML = data.welcomeTitle;
+        document.getElementById('welcome-game-subtitle').innerText = data.welcomeSubtitle;
+        document.getElementById('welcome-game-intro').innerText = data.welcomeIntro;
+        document.getElementById('welcome-btn-text').innerText = data.btnText;
+        document.getElementById('team-name-input').value = this.state.teamName || '';
     }
 
     showScreen(screenId) {
@@ -664,15 +1278,27 @@ class ScavengerEscapeGame {
     // URL parametresinden doğrudan QR okutma desteği
     checkQueryParameters() {
         const urlParams = new URLSearchParams(window.location.search);
+        const subjectParam = urlParams.get('subject');
         const stationParam = urlParams.get('station');
-        if (stationParam) {
+        
+        if (subjectParam && stationParam) {
             window.history.replaceState({}, document.title, window.location.pathname);
+            
+            if (SUBJECTS_DATA[subjectParam]) {
+                this.state.activeSubject = subjectParam;
+                this.applySubjectTheme(subjectParam);
+                this.saveState();
+            }
             
             if (this.state.teamName) {
                 const sNum = parseInt(stationParam);
-                if (sNum >= 1 && sNum <= STATIONS.length) {
+                const stations = this.activeStations;
+                if (sNum >= 1 && sNum <= stations.length) {
                     this.handleScannedStation(sNum);
                 }
+            } else {
+                this.showScreen('welcome-screen');
+                this.setupWelcomeScreenUI();
             }
         }
     }
@@ -681,6 +1307,49 @@ class ScavengerEscapeGame {
     // ETKİNLİK DİNLEYİCİLERİ
     // ==========================================================================
     bindEvents() {
+        // Ana Sayfa / Branş Seçimine Dönme
+        document.getElementById('home-btn').addEventListener('click', () => {
+            sound.playClick();
+            this.stopScanner();
+            this.state.activeSubject = null;
+            this.saveState();
+            this.showScreen('category-selection-screen');
+        });
+
+        document.getElementById('back-to-categories-btn').addEventListener('click', () => {
+            sound.playClick();
+            this.state.activeSubject = null;
+            this.saveState();
+            this.showScreen('category-selection-screen');
+        });
+
+        // Branş Seçim Kartı Tıklamaları
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                sound.playClick();
+                const subject = e.currentTarget.getAttribute('data-subject');
+                if (subject && SUBJECTS_DATA[subject]) {
+                    this.state.activeSubject = subject;
+                    this.applySubjectTheme(subject);
+                    this.saveState();
+                    
+                    const subState = this.activeSubState;
+                    const STATIONS = this.activeStations;
+                    
+                    if (subState.endTime && subState.solvedStations.length === STATIONS.length) {
+                        this.showScreen('victory-screen');
+                        this.renderVictoryScreen();
+                    } else if (this.state.teamName) {
+                        this.showScreen('game-screen');
+                        this.setupGameUI();
+                    } else {
+                        this.showScreen('welcome-screen');
+                        this.setupWelcomeScreenUI();
+                    }
+                }
+            });
+        });
+
         // Ses Aç/Kapat
         document.getElementById('sound-btn').addEventListener('click', () => {
             const isMuted = sound.toggleMute();
@@ -693,12 +1362,24 @@ class ScavengerEscapeGame {
         // Öğretmen Paneli
         document.getElementById('teacher-btn').addEventListener('click', () => {
             sound.playClick();
+            
+            // Set selection in dropdown to current active subject if available
+            if (this.state.activeSubject) {
+                document.getElementById('teacher-subject-select').value = this.state.activeSubject;
+            }
+            
             this.openTeacherPanel();
         });
         
         document.getElementById('close-teacher-btn').addEventListener('click', () => {
             sound.playClick();
             document.getElementById('teacher-modal').classList.remove('active');
+        });
+
+        // Öğretmen Branş Seçim Filtresi
+        document.getElementById('teacher-subject-select').addEventListener('change', () => {
+            sound.playClick();
+            this.openTeacherPanel();
         });
 
         // Oyunu Başlat (Giriş)
@@ -717,10 +1398,10 @@ class ScavengerEscapeGame {
             
             sound.playSuccess();
             this.state.teamName = name;
-            this.state.startTime = Date.now();
             
-            // İlk adımdaki bilmeceyi başlatmak için 1. adımı aktifleştir
-            this.state.currentStep = 1;
+            const subState = this.activeSubState;
+            subState.startTime = Date.now();
+            subState.currentStep = 1;
             this.saveState();
             
             this.showScreen('game-screen');
@@ -760,7 +1441,8 @@ class ScavengerEscapeGame {
         // Bilmeceden Vazgeç / Geri Dön
         document.getElementById('cancel-riddle-btn').addEventListener('click', () => {
             sound.playClick();
-            this.state.activeRiddleId = null;
+            const subState = this.activeSubState;
+            subState.activeRiddleId = null;
             this.saveState();
             this.showHudView('dashboard-view');
             this.setupGameUI();
@@ -805,8 +1487,24 @@ class ScavengerEscapeGame {
 
         // Öğretmen İlerleme Sıfırla
         document.getElementById('reset-class-progress-btn').addEventListener('click', () => {
-            if (confirm("Tüm oyun ilerlemesi silinecektir. Emin misiniz?")) {
-                this.resetGame();
+            const selectedSub = document.getElementById('teacher-subject-select').value || 'kimya';
+            if (confirm(`${SUBJECTS_DATA[selectedSub].name} dersine ait tüm ilerlemeler sıfırlanacaktır. Emin misiniz?`)) {
+                if (this.state.subjects && this.state.subjects[selectedSub]) {
+                    this.state.subjects[selectedSub] = {
+                        currentStep: 1,
+                        solvedStations: [],
+                        activeRiddleId: null,
+                        startTime: null,
+                        endTime: null
+                    };
+                }
+                this.saveState();
+                
+                if (this.state.activeSubject === selectedSub) {
+                    this.resetGame();
+                } else {
+                    this.openTeacherPanel();
+                }
             }
         });
 
@@ -849,10 +1547,13 @@ class ScavengerEscapeGame {
         this.updateProgressBar();
         this.updateDashboardTarget();
         
+        const STATIONS = this.activeStations;
+        const subState = this.activeSubState;
+        
         // Eğer aktif taranmış bir bilmece varsa ona yönlendir
-        if (this.state.activeRiddleId) {
-            this.loadRiddleIntoView(this.state.activeRiddleId);
-        } else if (this.state.currentStep === 1 && !this.state.solvedStations.includes(1)) {
+        if (subState.activeRiddleId) {
+            this.loadRiddleIntoView(subState.activeRiddleId);
+        } else if (subState.currentStep === 1 && !subState.solvedStations.includes(1)) {
             // Oyunun en başı: QR kod taratmak zorunda değil, doğrudan ilk bilmece yüklenebilir!
             this.loadRiddleIntoView(1);
         }
@@ -860,21 +1561,21 @@ class ScavengerEscapeGame {
 
     // Toplanan Harfleri Arayüzde Çantada Göster (Inventory Rendering)
     renderInventoryHUD() {
+        const STATIONS = this.activeStations;
+        const subState = this.activeSubState;
         const container = document.getElementById('collected-letters-container');
         container.innerHTML = '';
         
-        // 15 Harf Yuvası var
         let letterSlots = [];
         
         // Çözülen adımlardaki harfleri sırayla topla
         STATIONS.forEach(s => {
-            if (this.state.solvedStations.includes(s.id) && s.letter) {
+            if (subState.solvedStations.includes(s.id) && s.letter) {
                 letterSlots.push(s.letter);
             }
         });
 
         // Çanta alanını doldur
-        // En fazla 15 yuva gösterelim
         const totalPossibleSlots = 15;
         for (let i = 0; i < totalPossibleSlots; i++) {
             const chip = document.createElement('div');
@@ -888,18 +1589,18 @@ class ScavengerEscapeGame {
             container.appendChild(chip);
         }
 
-        // İlerleme sayacını güncelle (Dereceli silindirden Destek çubuğuna kadar şifre adımları)
-        // Toplam 18 istasyon var, 18. adım Destek Çubuğundaki final anagramı çözmektir.
-        const solvedCount = this.state.solvedStations.length;
-        document.getElementById('unlocked-counter').innerText = `İstasyonlar: ${solvedCount} / 17`;
+        const solvedCount = subState.solvedStations.length;
+        document.getElementById('unlocked-counter').innerText = `İstasyonlar: ${solvedCount} / ${STATIONS.length - 1}`;
     }
 
     // İlerleme Çubuğunu Güncelle
     updateProgressBar() {
+        const STATIONS = this.activeStations;
+        const subState = this.activeSubState;
         const bar = document.getElementById('game-progress-bar');
         if (bar) {
-            const totalSteps = STATIONS.length - 1; // 17 İstasyon yolculuğu
-            const solvedCount = this.state.solvedStations.length;
+            const totalSteps = STATIONS.length - 1;
+            const solvedCount = subState.solvedStations.length;
             const percentage = Math.min((solvedCount / totalSteps) * 100, 100);
             bar.style.width = `${percentage}%`;
         }
@@ -907,27 +1608,30 @@ class ScavengerEscapeGame {
 
     // Dashboard'daki Aktif Hedef İstasyon Kartını Güncelle
     updateDashboardTarget() {
+        const STATIONS = this.activeStations;
+        const subState = this.activeSubState;
         const targetTitle = document.getElementById('target-station-display');
         const targetInstruction = document.getElementById('target-instruction-text');
         
-        const currentActiveStep = this.state.currentStep;
+        const currentActiveStep = subState.currentStep;
         const currentStation = STATIONS.find(s => s.id === currentActiveStep);
         
         if (currentStation) {
-            // Eğer ilk adımdaysak ve henüz çözmemişsek
             if (currentActiveStep === 1) {
-                targetTitle.innerText = "Sıvı Ölçüm İstasyonu";
+                targetTitle.innerText = "Başlangıç İstasyonu";
                 targetInstruction.innerText = "Oyunu başlatmak için aşağıdaki ilk bilmeceyi çözmelisiniz. (Bilmece kartı otomatik yüklendi).";
             } else {
                 targetTitle.innerText = currentStation.title;
-                targetInstruction.innerText = `Sınıf içerisinde '${currentStation.title}' istasyonunu bulun, üzerindeki QR kodu kameranızla okutun.`;
+                targetInstruction.innerText = `Sınıf içerisinde '${currentStation.title}' istasyonunu bulun, üzerindeki QR kodu okutun.`;
             }
         }
     }
 
     // QR Kod Okutulunca veya Kod Girilince Akış Kontrolü
     handleScannedStation(stationId) {
-        const currentActiveStep = this.state.currentStep;
+        const STATIONS = this.activeStations;
+        const subState = this.activeSubState;
+        const currentActiveStep = subState.currentStep;
         
         // Doğru istasyon mu taranıyor kontrolü (Çözme sırasını zorunlu kılar)
         if (stationId === currentActiveStep) {
@@ -948,43 +1652,36 @@ class ScavengerEscapeGame {
 
     // Bilmeceyi Ekrana Doldurma
     loadRiddleIntoView(stationId) {
-        this.state.activeRiddleId = stationId;
+        const STATIONS = this.activeStations;
+        const subState = this.activeSubState;
+        subState.activeRiddleId = stationId;
         this.saveState();
         
         const station = STATIONS.find(s => s.id === stationId);
         if (!station) return;
-
+ 
         // Ekrana bilgileri yaz
-        if (stationId === 18) {
-            // FİNAL ADIMI - Destek Çubuğu Anagram Solver
+        if (stationId === STATIONS.length) {
+            // FİNAL ADIMI - Anagram Solver
             document.getElementById('riddle-station-num').innerText = "FİNAL GÖREVİ";
-            document.getElementById('riddle-title').innerText = "Kayıp Bilim İnsanı";
-            document.getElementById('riddle-text').innerText = "TÜM ŞİFRELERİ BAŞARI İLE ÇÖZDÜNÜZ, ŞİMDİ TOPLADIĞINIZ HARFLERİ BİRLEŞTİREREK KAYIP BİLİM ADAMINI BULUNUZ";
-            document.getElementById('riddle-hint').innerText = "Topladığın 15 harf: İ - G - O - L - L - İ - L - A - A - L - E - G - İ - L - E. Bu harfleri anlamlı iki kelime olacak şekilde karıştırarak dahi bilim insanının adını yaz.";
+            document.getElementById('riddle-title').innerText = "Gizemli Kişi / Kavram";
             
-            // Ekstra: Bilmece kutusunun içine harfleri görsel gösteren çipler ekleyelim
+            const earnedLetters = [];
+            STATIONS.forEach(s => {
+                if (s.letter) earnedLetters.push(s.letter);
+            });
+            
+            const lettersHTML = earnedLetters.map(l => `<span class="anagram-letter-chip">${l}</span>`).join('');
+            
             const terminal = document.getElementById('riddle-text');
             terminal.innerHTML = `
                 <p style="margin-bottom:12px;"><strong>SYS_OVERRIDE ></strong> TÜM ŞİFRELERİ BAŞARI İLE ÇÖZDÜNÜZ!</p>
-                <p style="color:#bd00ff; margin-bottom:8px;">Topladığınız 15 gizemli harf kutusu aşağıdadır. Harfleri birleştirerek <strong>Kayıp Bilim İnsanını</strong> bulunuz:</p>
+                <p style="color:#bd00ff; margin-bottom:8px;">Topladığınız gizemli harf kutuları aşağıdadır. Harfleri birleştirerek <strong>Kayıp Dâhiyi / Kavramı</strong> bulunuz:</p>
                 <div class="anagram-letters-holder">
-                    <span class="anagram-letter-chip">İ</span>
-                    <span class="anagram-letter-chip">G</span>
-                    <span class="anagram-letter-chip">O</span>
-                    <span class="anagram-letter-chip">L</span>
-                    <span class="anagram-letter-chip">L</span>
-                    <span class="anagram-letter-chip">İ</span>
-                    <span class="anagram-letter-chip">L</span>
-                    <span class="anagram-letter-chip">A</span>
-                    <span class="anagram-letter-chip">A</span>
-                    <span class="anagram-letter-chip">L</span>
-                    <span class="anagram-letter-chip">E</span>
-                    <span class="anagram-letter-chip">G</span>
-                    <span class="anagram-letter-chip">İ</span>
-                    <span class="anagram-letter-chip">L</span>
-                    <span class="anagram-letter-chip">E</span>
+                    ${lettersHTML}
                 </div>
             `;
+            document.getElementById('riddle-hint').innerText = `Topladığın harfleri anlamlı bir isim/kelime grubu olacak şekilde karıştırarak dâhiyi bulmalısın.`;
         } else {
             // Normal İstasyon Bilmecesi
             document.getElementById('riddle-station-num').innerText = stationId === 1 ? "BAŞLANGIÇ ADIMI" : `İSTASYON #${stationId - 1}`;
@@ -1013,6 +1710,10 @@ class ScavengerEscapeGame {
 
     // Bilmece Cevap Doğrulama
     verifyRiddleAnswer() {
+        const STATIONS = this.activeStations;
+        const SECRET_PHRASE = this.activeSecretPhrase;
+        const subState = this.activeSubState;
+        
         const inputElement = document.getElementById('riddle-answer-input');
         const answer = inputElement.value.trim();
         const feedback = document.getElementById('riddle-feedback');
@@ -1023,45 +1724,40 @@ class ScavengerEscapeGame {
             return;
         }
         
-        const station = STATIONS.find(s => s.id === this.state.activeRiddleId);
+        const station = STATIONS.find(s => s.id === subState.activeRiddleId);
         if (!station) return;
         
         const normalizedInput = normalizeTurkish(answer);
-        
-        // Cevap dizisindeki normalize edilmiş herhangi bir cevapla eşleşme var mı?
         const isCorrect = station.answers.some(ans => normalizeTurkish(ans) === normalizedInput);
         
         feedback.classList.remove('active');
         
         if (isCorrect) {
             sound.playSuccess();
-            confetti.spawn(); // Konfeti şenliği!
+            confetti.spawn();
             
             feedback.className = 'feedback-msg success active';
             
-            if (this.state.activeRiddleId === 18) {
+            if (subState.activeRiddleId === STATIONS.length) {
                 // ZAFER! Final şifre çözüldü!
-                feedback.innerText = "KAYIP BİLİM İNSANI BULUNDU! Laboratuvar aşımı başarılı.";
-                this.state.solvedStations.push(18);
-                this.state.endTime = Date.now();
-                this.state.activeRiddleId = null;
+                feedback.innerText = "GİZEMLİ KİŞİ/KAVRAM BULUNDU! Tebrikler dedektif.";
+                subState.solvedStations.push(STATIONS.length);
+                subState.endTime = Date.now();
+                subState.activeRiddleId = null;
                 this.saveState();
                 
                 setTimeout(() => {
                     this.checkCompletion();
                 }, 1800);
             } else {
-                // Bir normal istasyon çözüldü
                 const earnedLetterText = station.letter ? `\nKazanılan Harf: [ ${station.letter} ]` : "";
                 feedback.innerText = `DOĞRU CEVAP! \nBir sonraki hedef: "${station.nextStationName}" ${earnedLetterText}`;
                 
-                // Çözülenlere ekle ve sırayı 1 artır
-                this.state.solvedStations.push(this.state.activeRiddleId);
-                this.state.currentStep = this.state.activeRiddleId + 1;
-                this.state.activeRiddleId = null;
+                subState.solvedStations.push(subState.activeRiddleId);
+                subState.currentStep = subState.activeRiddleId + 1;
+                subState.activeRiddleId = null;
                 this.saveState();
                 
-                // 2.2 saniye sonra arayüze geri dön (Mesajın okunabilmesi için)
                 setTimeout(() => {
                     this.showHudView('dashboard-view');
                     this.setupGameUI();
@@ -1083,6 +1779,7 @@ class ScavengerEscapeGame {
 
     // Manuel 4 Haneli Yedek Kod Giriş Kontrolü
     verifyManualCode() {
+        const STATIONS = this.activeStations;
         const inputElement = document.getElementById('manual-code-input');
         const enteredCode = inputElement.value.trim();
         const feedback = document.getElementById('manual-feedback');
@@ -1093,7 +1790,6 @@ class ScavengerEscapeGame {
             return;
         }
         
-        // Eşleşen istasyonu bul
         const matchedStation = STATIONS.find(s => s.backupCode === enteredCode);
         feedback.classList.remove('active');
         
@@ -1123,7 +1819,9 @@ class ScavengerEscapeGame {
 
     // Oyun Bitim Kontrolü
     checkCompletion() {
-        if (this.state.solvedStations.includes(18)) {
+        const STATIONS = this.activeStations;
+        const subState = this.activeSubState;
+        if (subState.solvedStations.includes(STATIONS.length)) {
             sound.playVictory();
             confetti.spawn();
             setTimeout(() => confetti.spawn(), 1500);
@@ -1134,14 +1832,31 @@ class ScavengerEscapeGame {
     }
 
     renderVictoryScreen() {
-        document.getElementById('victory-team-name').innerText = this.state.teamName;
-        document.getElementById('victory-solved-count').innerText = "18 / 18";
+        const STATIONS = this.activeStations;
+        const SECRET_PHRASE = this.activeSecretPhrase;
+        const subState = this.activeSubState;
+        const data = SUBJECTS_DATA[this.state.activeSubject || 'kimya'];
         
-        const durationMs = this.state.endTime - this.state.startTime;
+        document.getElementById('victory-team-name').innerText = this.state.teamName;
+        document.getElementById('victory-solved-count').innerText = `${STATIONS.length} / ${STATIONS.length}`;
+        
+        // Reveal text
+        const revealContainer = document.querySelector('.completed-phrase');
+        if (revealContainer) {
+            revealContainer.innerHTML = `<span class="unlocked-reveal">${SECRET_PHRASE}</span>`;
+        }
+
+        const durationMs = subState.endTime - subState.startTime;
         const minutes = Math.floor(durationMs / 60000);
         const seconds = Math.floor((durationMs % 60000) / 1000);
         
         document.getElementById('victory-duration').innerText = `${minutes} dakika ${seconds} saniye`;
+        
+        // Custom victory description lore
+        const loreElement = document.querySelector('.victory-lore');
+        if (loreElement && data) {
+            loreElement.innerText = `Tebrikler! ${data.name} branşındaki tüm şifreleri çözerek ${SECRET_PHRASE} sırrını başarıyla aydınlattın. Gerçek bir bilim insanı gibi merakının peşinden gittin ve görevi tamamladın!`;
+        }
     }
 
     // ==========================================================================
@@ -1255,7 +1970,17 @@ class ScavengerEscapeGame {
         try {
             if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
                 const url = new URL(decodedText);
+                const subParam = url.searchParams.get('subject');
                 const statParam = url.searchParams.get('station');
+                
+                // Başka branşa ait QR okutulursa ikaz et
+                if (subParam && subParam !== this.state.activeSubject) {
+                    sound.playError();
+                    alert(`❌ Yanlış Ders İstasyonu!\n\nŞu an "${SUBJECTS_DATA[this.state.activeSubject].name}" oyununu oynamaktasın. Taramış olduğun QR kod ise "${SUBJECTS_DATA[subParam].name}" dersine ait!\n\nLütfen mevcut oyununa ait doğru istasyonu bulup tekrar tara!`);
+                    this.showHudView('dashboard-view');
+                    return;
+                }
+                
                 if (statParam) {
                     stationId = parseInt(statParam);
                 }
@@ -1265,6 +1990,7 @@ class ScavengerEscapeGame {
         // 2. Düz Metin Çözümleme
         if (!stationId) {
             const cleanText = decodedText.trim().toUpperCase();
+            const STATIONS = this.activeStations;
             const matchedByCode = STATIONS.find(s => s.code === cleanText);
             if (matchedByCode) {
                 stationId = matchedByCode.id;
@@ -1280,6 +2006,7 @@ class ScavengerEscapeGame {
         }
 
         // İstasyonu işle
+        const STATIONS = this.activeStations;
         if (stationId && stationId >= 1 && stationId <= STATIONS.length) {
             this.handleScannedStation(stationId);
         } else {
@@ -1321,12 +2048,16 @@ class ScavengerEscapeGame {
         const modal = document.getElementById('teacher-modal');
         modal.classList.add('active');
         
+        const selectedSub = document.getElementById('teacher-subject-select').value || 'kimya';
+        const data = SUBJECTS_DATA[selectedSub];
+        const subState = this.state.subjects[selectedSub] || { currentStep: 1, solvedStations: [] };
+        
         // 1. Genel Bakış Tablosunu Doldur
         const listContainer = document.querySelector('.stations-list');
         listContainer.innerHTML = '';
         
-        STATIONS.forEach(s => {
-            const isSolved = this.state.solvedStations.includes(s.id);
+        data.stations.forEach(s => {
+            const isSolved = subState.solvedStations.includes(s.id);
             const statusText = isSolved ? '<span class="text-emerald">[ÇÖZÜLDÜ]</span>' : '<span class="text-muted">[KİLİTLİ]</span>';
             const letterText = s.letter ? `<span class="text-cyan">${s.letter}</span>` : '<span class="text-muted">- (Yok)</span>';
             
@@ -1354,8 +2085,7 @@ class ScavengerEscapeGame {
         
         const baseUrl = window.location.href.split('?')[0];
 
-        // Kartlar oluşturuluyor (Adım 1'in kartı basılmayabilir ama öğretmen isterse diye tüm 18 adımı da basılabilir yapıyoruz)
-        STATIONS.forEach(s => {
+        data.stations.forEach(s => {
             const cardItem = document.createElement('div');
             cardItem.className = 'qr-card-item';
             
@@ -1372,7 +2102,8 @@ class ScavengerEscapeGame {
             const letterText = s.letter ? `Kazanılan Harf: [ <strong>${s.letter}</strong> ]` : "Kazanılan Harf: (Yok)";
             
             infoDiv.innerHTML = `
-                <div class="qr-card-num">İSTASYON #${s.id}</div>
+                <div class="qr-card-num">${data.name}</div>
+                <div class="qr-card-title">İSTASYON #${s.id}</div>
                 <div class="qr-card-hint"><strong>Bulunduğu Yer:</strong> ${s.title}</div>
                 <div style="font-size:0.7rem; color:#444; margin-top:2px;">${letterText}</div>
                 <div style="font-size:0.7rem; color:#666;">Hedef İstasyon: ${s.nextStationName}</div>
@@ -1381,8 +2112,8 @@ class ScavengerEscapeGame {
             cardItem.appendChild(infoDiv);
             qrContainer.appendChild(cardItem);
             
-            // QR Kod Oluştur (Kamera ile taratılacak URL)
-            const targetUrl = `${baseUrl}?station=${s.id}`;
+            // QR Kod Oluştur (Kamera ile taratılacak URL, branş parametresiyle!)
+            const targetUrl = `${baseUrl}?subject=${selectedSub}&station=${s.id}`;
             
             new QRious({
                 element: canvas,

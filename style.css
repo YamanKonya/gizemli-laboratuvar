@@ -1775,3 +1775,238 @@ body {
         font-size: 0.8rem !important;
     }
 }
+
+/* ==========================================================================
+   BRANŞ/DERS SEÇİM EKRANI STİLLERİ
+   ========================================================================== */
+.category-selection-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px 16px;
+    box-sizing: border-box;
+    overflow-y: auto;
+}
+
+.portal-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    text-align: center;
+    color: var(--text-bright);
+    margin: 8px 0 4px;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.portal-desc {
+    font-size: 0.8rem;
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.categories-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 20px;
+}
+
+.category-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.category-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    transition: background 0.3s;
+}
+
+.category-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+/* Branş Kart Renkleri */
+.category-card.math::before { background: #ff7b00; }
+.category-card.math:hover { border-color: rgba(255, 123, 0, 0.5); box-shadow: 0 0 15px rgba(255, 123, 0, 0.2); }
+.category-card.math .card-icon { color: #ff7b00; text-shadow: 0 0 10px rgba(255, 123, 0, 0.5); }
+
+.category-card.physics::before { background: #bd00ff; }
+.category-card.physics:hover { border-color: rgba(189, 0, 255, 0.5); box-shadow: 0 0 15px rgba(189, 0, 255, 0.2); }
+.category-card.physics .card-icon { color: #bd00ff; text-shadow: 0 0 10px rgba(189, 0, 255, 0.5); }
+
+.category-card.chemistry::before { background: #00f0ff; }
+.category-card.chemistry:hover { border-color: rgba(0, 240, 255, 0.5); box-shadow: 0 0 15px rgba(0, 240, 255, 0.2); }
+.category-card.chemistry .card-icon { color: #00f0ff; text-shadow: 0 0 10px rgba(0, 240, 255, 0.5); }
+
+.category-card.it::before { background: #39ff14; }
+.category-card.it:hover { border-color: rgba(57, 255, 20, 0.5); box-shadow: 0 0 15px rgba(57, 255, 20, 0.2); }
+.category-card.it .card-icon { color: #39ff14; text-shadow: 0 0 10px rgba(57, 255, 20, 0.5); }
+
+.category-card.social::before { background: #ffd700; }
+.category-card.social:hover { border-color: rgba(255, 215, 0, 0.5); box-shadow: 0 0 15px rgba(255, 215, 0, 0.2); }
+.category-card.social .card-icon { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+
+.category-card.literature::before { background: #ff0055; }
+.category-card.literature:hover { border-color: rgba(255, 0, 85, 0.5); box-shadow: 0 0 15px rgba(255, 0, 85, 0.2); }
+.category-card.literature .card-icon { color: #ff0055; text-shadow: 0 0 10px rgba(255, 0, 85, 0.5); }
+
+.card-icon {
+    font-size: 1.8rem;
+    width: 40px;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.category-card:hover .card-icon {
+    transform: scale(1.1);
+}
+
+.card-info {
+    flex-grow: 1;
+}
+
+.card-info h3 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-bright);
+    margin: 0 0 2px 0;
+    letter-spacing: 1px;
+}
+
+.card-info p {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.card-arrow {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    transition: transform 0.3s;
+}
+
+.category-card:hover .card-arrow {
+    transform: translateX(4px);
+    color: var(--text-bright);
+}
+
+/* ==========================================================================
+   ÖĞRETMEN SEÇİM PANELİ & DİNAMİK SELEKTÖR
+   ========================================================================== */
+.teacher-subject-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.teacher-subject-filter-bar label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.cyber-select {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    border-radius: 6px;
+    color: var(--text-bright);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cyber-select:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+}
+
+.cyber-select option {
+    background: #0d0d13;
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   DİNAMİK BRANŞ TEMALARI
+   ========================================================================== */
+/* KİMYA TEMASI (Camgöbeği & Mor - Varsayılan) */
+.theme-kimya {
+    --neon-cyan: #00f0ff;
+    --neon-purple: #bd00ff;
+    --glow-cyan: 0 0 8px #00f0ff, 0 0 15px rgba(0, 240, 255, 0.5);
+    --glow-purple: 0 0 8px #bd00ff, 0 0 15px rgba(189, 0, 255, 0.5);
+}
+
+/* MATEMATİK TEMASI (Turuncu & Altın) */
+.theme-matematik {
+    --neon-cyan: #ff7b00;
+    --neon-purple: #ffd700;
+    --glow-cyan: 0 0 8px #ff7b00, 0 0 15px rgba(255, 123, 0, 0.5);
+    --glow-purple: 0 0 8px #ffd700, 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+/* FİZİK TEMASI (Mor & Yakut Kırmızı) */
+.theme-fizik {
+    --neon-cyan: #bd00ff;
+    --neon-purple: #ff0055;
+    --glow-cyan: 0 0 8px #bd00ff, 0 0 15px rgba(189, 0, 255, 0.5);
+    --glow-purple: 0 0 8px #ff0055, 0 0 15px rgba(255, 0, 85, 0.5);
+}
+
+/* BİLİŞİM TEMASI (Zümrüt Yeşil & Camgöbeği) */
+.theme-bilisim {
+    --neon-cyan: #39ff14;
+    --neon-purple: #00f0ff;
+    --glow-cyan: 0 0 8px #39ff14, 0 0 15px rgba(57, 255, 20, 0.5);
+    --glow-purple: 0 0 8px #00f0ff, 0 0 15px rgba(0, 240, 255, 0.5);
+}
+
+/* SOSYAL BİLGİLER TEMASI (Kehribar & Turuncu) */
+.theme-sosyal {
+    --neon-cyan: #ffd700;
+    --neon-purple: #ff7b00;
+    --glow-cyan: 0 0 8px #ffd700, 0 0 15px rgba(255, 215, 0, 0.5);
+    --glow-purple: 0 0 8px #ff7b00, 0 0 15px rgba(255, 123, 0, 0.5);
+}
+
+/* EDEBİYAT TEMASI (Yakut Kırmızı & Pembe) */
+.theme-edebiyat {
+    --neon-cyan: #ff0055;
+    --neon-purple: #ff00ff;
+    --glow-cyan: 0 0 8px #ff0055, 0 0 15px rgba(255, 0, 85, 0.5);
+    --glow-purple: 0 0 8px #ff00ff, 0 0 15px rgba(255, 0, 255, 0.5);
+}
+
+/* Navigasyon düzenlemesi */
+.nav-right {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
