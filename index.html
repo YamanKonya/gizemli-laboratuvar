@@ -49,32 +49,32 @@
             <!-- ============================================ -->
             <section id="welcome-screen" class="app-screen active">
                 <div class="welcome-container">
-                    <div class="cyber-badge">GÜVENLİK DÜZEYİ: EN YÜKSEK</div>
+                    <div class="cyber-badge">🕵️‍♂️ GİZLİ GÖREV AKTİF</div>
                     
-                    <div class="glowing-portal">
-                        <i class="fas fa-atom portal-icon"></i>
-                        <div class="scanner-line"></div>
+                    <div class="glowing-portal" style="border-color: var(--neon-cyan); box-shadow: var(--glow-cyan);">
+                        <i class="fas fa-flask portal-icon text-cyan" style="font-size: 3.2rem; filter: drop-shadow(var(--glow-cyan));"></i>
+                        <div class="scanner-line" style="background: linear-gradient(90deg, transparent, var(--neon-purple), transparent); box-shadow: var(--glow-purple);"></div>
                     </div>
                     
                     <h1 class="game-title">
                         <span>GİZEMLİ</span>
                         LABORATUVAR
                     </h1>
-                    <h2 class="game-subtitle">Kayıp Bilim İnsanı</h2>
+                    <h2 class="game-subtitle">🕵️‍♂️ Kayıp Bilim İnsanı Dedektifliği 🔬</h2>
                     
-                    <p class="game-intro">
-                        Yüzyıllar önce yaşamış dahi bir bilim insanının sır gibi saklanan kayıp parşömeni bu laboratuvarda gizli. 
-                        Odadaki istasyonların QR kodlarını bularak şifreleri çözün, harfleri toplayın ve bu gizemli bilim insanının adını açığa çıkarın!
+                    <p class="game-intro" style="font-size: 0.88rem; line-height: 1.5; color: var(--text-primary);">
+                        Laboratuvarda yüzyıllar önce yaşamış dâhi bir bilim insanının sır gibi saklanan kayıp parşömeni gizli! 
+                        Sınıftaki istasyonları bul, QR kodları tarat, eğlenceli bilmeceleri çöz, harfleri toplayıp gizemli dâhiyi ortaya çıkar! 🧪✨
                     </p>
 
                     <div class="input-group">
-                        <label for="team-name-input"><i class="fas fa-users-viewfinder"></i> Ekip veya Öğrenci Adı</label>
-                        <input type="text" id="team-name-input" placeholder="Giriş kimliğinizi yazın..." autocomplete="off">
+                        <label for="team-name-input">🕵️‍♂️ Dedektif veya Ekip Adı</label>
+                        <input type="text" id="team-name-input" placeholder="Dedektif kimliğinizi yazın..." autocomplete="off">
                     </div>
 
-                    <button id="start-game-btn" class="cyber-btn pulsing">
+                    <button id="start-game-btn" class="cyber-btn pulsing" style="background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-purple) 100%);">
                         <span class="btn-glow"></span>
-                        LABORATUVARA GİRİŞ <i class="fas fa-terminal"></i>
+                        LABORATUVARA SIZ! 🧪🚀
                     </button>
                 </div>
             </section>
@@ -316,6 +316,6 @@
     </div>
     
     <!-- Custom Game Logic with cache-busting -->
-    <script src="app.js?v=scavenger_hunt_v5"></script>
+    <script src="app.js?v=scavenger_hunt_v6"></script>
 </body>
 </html>

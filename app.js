@@ -375,12 +375,15 @@ class ParticleBg {
     createParticle(randomY = false) {
         return {
             x: Math.random() * this.canvas.width,
-            y: randomY ? Math.random() * this.canvas.height : this.canvas.height + 10,
-            size: Math.random() * 2 + 0.8,
-            speedY: -(Math.random() * 0.4 + 0.15),
-            speedX: (Math.random() - 0.5) * 0.2,
-            alpha: Math.random() * 0.4 + 0.1,
-            color: Math.random() > 0.5 ? '0, 240, 255' : '189, 0, 255'
+            y: randomY ? Math.random() * this.canvas.height : this.canvas.height + 15,
+            size: Math.random() * 7 + 4, // Larger chemistry bubble size!
+            speedY: -(Math.random() * 0.45 + 0.15),
+            speedX: (Math.random() - 0.5) * 0.1,
+            alpha: Math.random() * 0.45 + 0.15,
+            color: Math.random() > 0.5 ? '0, 240, 255' : '189, 0, 255',
+            wobble: Math.random() * Math.PI * 2,
+            wobbleSpeed: Math.random() * 0.04 + 0.015,
+            wobbleAmount: Math.random() * 3 + 1.5
         };
     }
 
@@ -391,20 +394,49 @@ class ParticleBg {
         this.particles.forEach((p, index) => {
             p.y += p.speedY;
             p.x += p.speedX;
+            p.wobble += p.wobbleSpeed;
             
-            if (p.y < -10 || p.x < -10 || p.x > this.canvas.width + 10) {
+            // Calculate wobble offset for a cute bubbling floating effect
+            const xOffset = Math.sin(p.wobble) * p.wobbleAmount;
+            
+            if (p.y < -20 || p.x + xOffset < -20 || p.x + xOffset > this.canvas.width + 20) {
                 this.particles[index] = this.createParticle(false);
             }
             
+            this.ctx.save();
+            
+            // 3D bubble radial gradient
+            const grad = this.ctx.createRadialGradient(
+                p.x + xOffset - p.size * 0.25, 
+                p.y - p.size * 0.25, 
+                p.size * 0.05, 
+                p.x + xOffset, 
+                p.y, 
+                p.size
+            );
+            grad.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
+            grad.addColorStop(0.3, `rgba(${p.color}, ${p.alpha * 0.3})`);
+            grad.addColorStop(0.85, `rgba(${p.color}, ${p.alpha})`);
+            grad.addColorStop(1, `rgba(${p.color}, 0.05)`);
+            
+            // Draw bubble base
             this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            this.ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
-            this.ctx.shadowBlur = 4;
-            this.ctx.shadowColor = `rgba(${p.color}, 0.4)`;
+            this.ctx.arc(p.x + xOffset, p.y, p.size, 0, Math.PI * 2);
+            this.ctx.fillStyle = grad;
+            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            this.ctx.lineWidth = 1;
             this.ctx.fill();
+            this.ctx.stroke();
+            
+            // Draw specular glass reflection highlight
+            this.ctx.beginPath();
+            this.ctx.arc(p.x + xOffset - p.size * 0.3, p.y - p.size * 0.3, p.size * 0.18, 0, Math.PI * 2);
+            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+            this.ctx.fill();
+            
+            this.ctx.restore();
         });
         
-        this.ctx.shadowBlur = 0;
         requestAnimationFrame(() => this.animate());
     }
 
