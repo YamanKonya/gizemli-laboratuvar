@@ -1148,15 +1148,11 @@ class ScavengerEscapeGame {
     // KAMERA VE DOKÜMAN QR OKUYUCU ENTEGRASYONU
     // ==========================================================================
     startScanner() {
-        const width = document.getElementById('reader').clientWidth;
-        
+        // High-compatibility config for iOS Safari and Android Chrome
+        // Removing qrbox and fixed aspectRatio allows scanning the whole video frame instantly, 
+        // resolving the 0x0 size layout bug caused by active view transitions.
         const config = {
-            fps: 10,
-            qrbox: {
-                width: Math.min(width * 0.7, 220),
-                height: Math.min(width * 0.7, 220)
-            },
-            aspectRatio: 1.0
+            fps: 15
         };
 
         this.html5Qrcode = new Html5Qrcode("reader");
