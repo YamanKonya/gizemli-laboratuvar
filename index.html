@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Gizemli Laboratuvar: Kayıp Bilim İnsanı</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- html5-qrcode library for camera QR scanning -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+    
+    <!-- QRious for dynamic offline-friendly QR code generation (Teacher Panel) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main viewport wrapper (9:16 Aspect Ratio Mockup for Desktop, Fullscreen on Mobile) -->
+    <div class="viewport-wrapper">
+        <div class="phone-mockup">
+            
+            <!-- Dynamic Particles Canvas Background -->
+            <canvas id="particles-bg"></canvas>
+            
+            <!-- Confetti Canvas for Success Animations -->
+            <canvas id="confetti-canvas"></canvas>
+
+            <!-- SOUND CONTROLS & HEADER UTILITIES -->
+            <div class="top-nav">
+                <button id="sound-btn" class="icon-btn" title="Ses Aç/Kapat">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <div class="logo-text">SYS.v400</div>
+                <button id="teacher-btn" class="icon-btn" title="Öğretmen Paneli">
+                    <i class="fas fa-user-gear"></i>
+                </button>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- 1. WELCOME / PORTAL SCREEN                   -->
+            <!-- ============================================ -->
+            <section id="welcome-screen" class="app-screen active">
+                <div class="welcome-container">
+                    <div class="cyber-badge">GÜVENLİK DÜZEYİ: EN YÜKSEK</div>
+                    
+                    <div class="glowing-portal">
+                        <i class="fas fa-atom portal-icon"></i>
+                        <div class="scanner-line"></div>
+                    </div>
+                    
+                    <h1 class="game-title">
+                        <span>GİZEMLİ</span>
+                        LABORATUVAR
+                    </h1>
+                    <h2 class="game-subtitle">Kayıp Bilim İnsanı</h2>
+                    
+                    <p class="game-intro">
+                        Yüzyıllar önce yaşamış dahi bir bilim insanının sır gibi saklanan kayıp parşömeni bu laboratuvarda gizli. 
+                        Odadaki istasyonların QR kodlarını bularak şifreleri çözün, harfleri toplayın ve bu gizemli bilim insanının adını açığa çıkarın!
+                    </p>
+
+                    <div class="input-group">
+                        <label for="team-name-input"><i class="fas fa-users-viewfinder"></i> Ekip veya Öğrenci Adı</label>
+                        <input type="text" id="team-name-input" placeholder="Giriş kimliğinizi yazın..." autocomplete="off">
+                    </div>
+
+                    <button id="start-game-btn" class="cyber-btn pulsing">
+                        <span class="btn-glow"></span>
+                        LABORATUVARA GİRİŞ <i class="fas fa-terminal"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ============================================ -->
+            <!-- 2. MAIN GAME HUDS (STATE-DEPENDENT SECTIONS) -->
+            <!-- ============================================ -->
+            <section id="game-screen" class="app-screen">
+                
+                <!-- STICKY LETTERS PANEL (TOP HUD) -->
+                <div class="letters-hud">
+                    <div class="hud-label">
+                        <span><i class="fas fa-briefcase text-cyan"></i> ÇANTANDAKİ HARFLER</span>
+                        <span id="unlocked-counter">İlerleme: 0 / 17</span>
+                    </div>
+                    
+                    <div id="collected-letters-container" class="letters-container">
+                        <!-- Will display unlocked letters dynamically as cute round cards -->
+                    </div>
+                </div>
+
+                <!-- PLAYING DASHBOARD -->
+                <div id="dashboard-view" class="hud-view active">
+                    <div class="status-card glass">
+                        <div class="card-header">
+                            <i class="fas fa-compass text-purple glow-dot"></i>
+                            <span>AKTİF HEDEF</span>
+                        </div>
+                        <div class="target-indicator">
+                            <span class="target-label">Gitmen Gereken İstasyon:</span>
+                            <h3 id="target-station-display" class="target-name text-cyan">Dereceli Silindir</h3>
+                        </div>
+                        <p class="status-instruction" id="target-instruction-text">Sınıf içerisinde yukarıdaki istasyonu bulun ve üzerindeki QR kodu kameranızla okutun.</p>
+                        
+                        <!-- Step Progress Bar -->
+                        <div class="progress-wrapper">
+                            <div class="progress-text">Macerada İlerleme</div>
+                            <div class="progress-bar-bg">
+                                <div id="game-progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="scan-action-zone">
+                        <button id="open-scanner-btn" class="scan-pulse-btn">
+                            <div class="btn-ripple"></div>
+                            <i class="fas fa-qrcode"></i>
+                            <span>QR TARAYICIYI AÇ</span>
+                        </button>
+                    </div>
+
+                    <div class="fallback-link-container">
+                        <p>Kamera çalışmıyor mu?</p>
+                        <button id="manual-mode-btn" class="text-btn"><i class="fas fa-keyboard"></i> Şifreyi Elle Gir</button>
+                    </div>
+                </div>
+
+                <!-- CAMERA SCANNER VIEW -->
+                <div id="scanner-view" class="hud-view">
+                    <div class="scanner-card glass">
+                        <div class="scanner-header">
+                            <h3><i class="fas fa-expand text-cyan anim-pulse"></i> QR Kod Taranıyor...</h3>
+                            <button id="close-scanner-btn" class="close-btn"><i class="fas fa-xmark"></i></button>
+                        </div>
+                        
+                        <!-- Scanner element with scanning overlay -->
+                        <div class="scanner-container-wrapper">
+                            <div id="reader"></div>
+                            <div class="scan-laser"></div>
+                            <div class="scanner-overlay-corners">
+                                <div class="corner top-left"></div>
+                                <div class="corner top-right"></div>
+                                <div class="corner bottom-left"></div>
+                                <div class="corner bottom-right"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="scanner-footer">
+                            <p class="camera-info"><i class="fas fa-info-circle"></i> Kodun kamerada tam ortalandığından emin olun.</p>
+                            <button id="scanner-manual-fallback" class="text-btn"><i class="fas fa-keyboard"></i> Kod Girişine Geç</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIDDLE VIEW -->
+                <div id="riddle-view" class="hud-view">
+                    <div class="riddle-card glass">
+                        <div class="riddle-header">
+                            <div class="station-badge"><span id="riddle-station-num">İSTASYON #1</span></div>
+                            <h3 id="riddle-title">İstasyon Başlığı</h3>
+                        </div>
+                        
+                        <div class="riddle-content">
+                            <div class="cyber-terminal">
+                                <p id="riddle-text">Burası bilmece sorusunun geleceği yer.</p>
+                            </div>
+                            
+                            <div class="hint-accordion">
+                                <button id="hint-toggle-btn" class="hint-btn">
+                                    <span><i class="fas fa-lightbulb text-yellow"></i> İpucu Al</span>
+                                    <i class="fas fa-chevron-down arrow"></i>
+                                </button>
+                                <div id="hint-text-wrapper" class="hint-content">
+                                    <p id="riddle-hint">İpucu buraya yüklenecek...</p>
+                                </div>
+                            </div>
+
+                            <div class="answer-group">
+                                <label for="riddle-answer-input"><i class="fas fa-key text-emerald"></i> ŞİFREYİ ÇÖZ</label>
+                                <input type="text" id="riddle-answer-input" placeholder="Cevabınızı girin..." autocomplete="off">
+                                <span class="input-focus-glow"></span>
+                            </div>
+
+                            <div id="riddle-feedback" class="feedback-msg"></div>
+
+                            <div class="button-row">
+                                <button id="cancel-riddle-btn" class="cyber-btn secondary">Geri Dön</button>
+                                <button id="submit-answer-btn" class="cyber-btn primary">DOĞRULA <i class="fas fa-check-double"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MANUAL CODE ENTRY VIEW -->
+                <div id="manual-entry-view" class="hud-view">
+                    <div class="manual-card glass">
+                        <div class="card-header">
+                            <i class="fas fa-keyboard text-cyan"></i>
+                            <span>MANUEL KOD GİRİŞİ</span>
+                        </div>
+                        <p class="manual-instruction">Kameranız çalışmıyorsa veya QR kod yıpranmışsa, istasyon kağıdının altında bulunan 4 haneli yedek kodu girin.</p>
+                        
+                        <div class="input-group">
+                            <label for="manual-code-input"><i class="fas fa-barcode"></i> 4 Haneli Yedek Kod</label>
+                            <input type="number" id="manual-code-input" placeholder="Örn: 1943" pattern="[0-9]*" inputmode="numeric" max="9999" autocomplete="off">
+                        </div>
+
+                        <div id="manual-feedback" class="feedback-msg"></div>
+
+                        <div class="button-row">
+                            <button id="cancel-manual-btn" class="cyber-btn secondary">İptal</button>
+                            <button id="submit-manual-code-btn" class="cyber-btn primary">KODU TARA <i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ============================================ -->
+            <!-- 3. VICTORY / ESCAPE OVERRIDE SCREEN          -->
+            <!-- ============================================ -->
+            <section id="victory-screen" class="app-screen">
+                <div class="victory-container">
+                    <div class="victory-header">
+                        <div class="cyber-badge success-badge"><i class="fas fa-unlock-keyhole"></i> ODADAN KAÇILDI</div>
+                        <div class="victory-shield">
+                            <i class="fas fa-trophy trophy-icon"></i>
+                        </div>
+                    </div>
+
+                    <h1 class="victory-title">GÖREV TAMAMLANDI</h1>
+                    
+                    <div class="completed-phrase">
+                        <span class="unlocked-reveal">GALİLEO GALİLEİ</span>
+                    </div>
+
+                    <div class="victory-stats glass">
+                        <div class="stat-row">
+                            <span class="stat-label">Kaşif Ekip:</span>
+                            <span id="victory-team-name" class="stat-value text-cyan">Star-Lab</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Kurtarma Süresi:</span>
+                            <span id="victory-duration" class="stat-value text-emerald">12:35</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Çözülen İstasyon:</span>
+                            <span id="victory-solved-count" class="stat-value text-purple">18 / 18</span>
+                        </div>
+                    </div>
+
+                    <p class="victory-lore">
+                        Tebrikler! Galileo Galilei'nin 400 yıldır saklanan sırrını başarıyla çözdünüz. 
+                        Teleskobu gökyüzüne çevirerek Dünya'nın döndüğünü savunan bu cesur bilim insanı gibi siz de gerçeğin peşinden gittiniz ve laboratuvardan kaçmayı başardınız!
+                    </p>
+
+                    <button id="restart-game-btn" class="cyber-btn success-btn">
+                        <span class="btn-glow"></span>
+                        YENİDEN OYNA <i class="fas fa-rotate-left"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- ============================================ -->
+            <!-- 4. TEACHER PANEL MODAL / OVERLAY            -->
+            <!-- ============================================ -->
+            <div id="teacher-modal" class="modal-overlay">
+                <div class="modal-container glass">
+                    <div class="modal-header">
+                        <h2><i class="fas fa-chalkboard-user text-purple"></i> Öğretmen Paneli</h2>
+                        <button id="close-teacher-btn" class="icon-btn"><i class="fas fa-xmark"></i></button>
+                    </div>
+                    
+                    <div class="modal-tabs">
+                        <button class="tab-btn active" data-tab="tab-overview">Genel Bakış</button>
+                        <button class="tab-btn" data-tab="tab-qrs">QR Kod Kartları</button>
+                    </div>
+                    
+                    <div class="modal-body scrollable">
+                        <!-- Tab 1: Overview -->
+                        <div id="tab-overview" class="tab-content active">
+                            <p class="tab-desc">Bu kaçış oyununu sınıfınızda uygulamak için aşağıdaki istasyon şifrelerini ve cevaplarını kullanabilirsiniz.</p>
+                            
+                            <div class="teacher-stats">
+                                <button id="reset-class-progress-btn" class="cyber-btn danger-btn"><i class="fas fa-trash-can"></i> Tüm İlerlemeyi Sıfırla</button>
+                            </div>
+
+                            <div class="stations-list">
+                                <!-- Dynamically generated station summary table -->
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Printable QR Cards -->
+                        <div id="tab-qrs" class="tab-content">
+                            <div class="print-actions">
+                                <p class="tab-desc">Aşağıdaki QR kodları yazdırarak sınıfınızın farklı köşelerine asın. Öğrenciler bu kodları telefonlarıyla tarayacaktır.</p>
+                                <button id="print-qrs-btn" class="cyber-btn font-small"><i class="fas fa-print"></i> KARTLARI YAZDIR (PDF)</button>
+                            </div>
+                            
+                            <div id="qr-cards-printout" class="qr-cards-grid">
+                                <!-- Dynamically generated printable QR cards -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- Custom Game Logic with cache-busting -->
+    <script src="app.js?v=scavenger_hunt_v4"></script>
+</body>
+</html>
