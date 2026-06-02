@@ -1281,7 +1281,8 @@ class ScavengerEscapeGame {
                 size: 200,
                 background: '#ffffff',
                 foreground: '#000000',
-                level: 'H'
+                level: 'M',
+                padding: 15
             });
 
             // Convert canvas to base64 image tag so browsers render it 100% reliably in print dialogs
