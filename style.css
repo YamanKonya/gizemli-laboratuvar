@@ -830,8 +830,11 @@ body {
     border-bottom: 1px solid rgba(255,255,255,0.02);
 }
 
-#reader {
-    border: none !important;
+#scanner-video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    background: #000;
 }
 
 /* html5-qrcode kütüphanesinin varsayılan gereksiz arayüzlerini gizleme */

@@ -1145,32 +1145,75 @@ class ScavengerEscapeGame {
     }
 
     // ==========================================================================
-    // KAMERA VE DOKÜMAN QR OKUYUCU ENTEGRASYONU
+    // KAMERA VE DOKÜMAN QR OKUYUCU ENTEGRASYONU (jsQR - Ultra Uyumlu iOS/Android Motoru)
     // ==========================================================================
     startScanner() {
-        // High-compatibility config for iOS Safari and Android Chrome
-        // Removing qrbox and fixed aspectRatio allows scanning the whole video frame instantly, 
-        // resolving the 0x0 size layout bug caused by active view transitions.
-        const config = {
-            fps: 15
-        };
-
-        this.html5Qrcode = new Html5Qrcode("reader");
+        const video = document.getElementById('scanner-video');
+        this.scannerStream = null;
+        this.scannerActive = true;
         
-        this.html5Qrcode.start(
-            { facingMode: "environment" },
-            config,
-            (decodedText) => this.onQrScanSuccess(decodedText),
-            () => {}
-        ).catch(err => {
+        video.style.display = 'block';
+
+        const self = this;
+
+        navigator.mediaDevices.getUserMedia({ 
+            video: { facingMode: "environment" } 
+        }).then(stream => {
+            self.scannerStream = stream;
+            video.srcObject = stream;
+            video.setAttribute("playsinline", true); // iOS Safari tam ekran engelleme
+            video.play().catch(e => console.error("Video oynatılamadı:", e));
+            
+            // Tarama döngüsünü başlat
+            requestAnimationFrame(() => self.scanFrame());
+        }).catch(err => {
             console.error("Kamera başlatma hatası:", err);
-            this.handleCameraError(err);
+            self.handleCameraError(err);
         });
+    }
+
+    scanFrame() {
+        if (!this.scannerActive) return;
+        
+        const video = document.getElementById('scanner-video');
+        
+        if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+            // Arka planda piksel analizi için gizli canvas oluştur
+            if (!this.scanCanvas) {
+                this.scanCanvas = document.createElement('canvas');
+                this.scanCtx = this.scanCanvas.getContext('2d', { willReadFrequently: true });
+            }
+            
+            this.scanCanvas.width = video.videoWidth;
+            this.scanCanvas.height = video.videoHeight;
+            
+            this.scanCtx.drawImage(video, 0, 0, this.scanCanvas.width, this.scanCanvas.height);
+            
+            const imageData = this.scanCtx.getImageData(0, 0, this.scanCanvas.width, this.scanCanvas.height);
+            
+            // jsQR kütüphanesi ile çözümle
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: "dontInvert"
+            });
+            
+            if (code && code.data) {
+                console.log("jsQR başarıyla çözümledi:", code.data);
+                this.onQrScanSuccess(code.data);
+                return; // Başarılı olunca döngüyü kes!
+            }
+        }
+        
+        // Döngüye devam et
+        if (this.scannerActive) {
+            requestAnimationFrame(() => this.scanFrame());
+        }
     }
 
     onQrScanSuccess(decodedText) {
         sound.playSuccess();
         this.stopScanner();
+        
+        console.log("QR decoded:", decodedText);
         
         let stationId = null;
         
@@ -1214,22 +1257,26 @@ class ScavengerEscapeGame {
 
     handleCameraError(error) {
         this.stopScanner();
-        alert("Kameranıza erişilemedi! İzinleri engellemiş olabilirsiniz. \n\nSorun değil! Şifre çözmek için istasyon kağıtlarındaki 4 haneli yedek kodları elinizle girerek devam edebilirsiniz.");
+        alert("Kameranıza erişilemedi! İzinleri engellemiş olabilirsiniz veya tarayıcınız uyumlu olmayabilir. \n\nSorun değil! İstasyon kartlarındaki 4 haneli yedek kodları manuel girerek maceraya devam edebilirsiniz.");
         this.showHudView('manual-entry-view');
     }
 
     stopScanner() {
-        if (this.html5Qrcode) {
+        this.scannerActive = false;
+        
+        const video = document.getElementById('scanner-video');
+        if (video) {
+            video.pause();
+            video.srcObject = null;
+        }
+        
+        if (this.scannerStream) {
             try {
-                if (this.html5Qrcode.isScanning) {
-                    this.html5Qrcode.stop().then(() => {
-                        this.html5Qrcode.clear();
-                    }).catch(err => console.error("Scanner stop error:", err));
-                }
+                this.scannerStream.getTracks().forEach(track => track.stop());
             } catch (e) {
-                console.error("Scanner stop exception:", e);
+                console.error("Track stop error:", e);
             }
-            this.html5Qrcode = null;
+            this.scannerStream = null;
         }
     }
 
