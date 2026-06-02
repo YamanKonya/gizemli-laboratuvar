@@ -938,9 +938,9 @@ class ScavengerEscapeGame {
             const expectedStation = STATIONS.find(s => s.id === currentActiveStep);
             
             if (stationId < currentActiveStep) {
-                alert(`İpucu: Bu istasyonu (${STATIONS.find(s=>s.id===stationId).title}) zaten çözmüştün! \n\nŞu an araman gereken hedef: "${expectedStation.title}"`);
+                alert(`⚠️ Zaten Çözüldü!\n\nBu istasyonu (${STATIONS.find(s=>s.id===stationId).title}) daha önce başarıyla çözmüştün.\n\nŞu an araman gereken hedef istasyon: "${expectedStation.title}"`);
             } else {
-                alert(`Yanlış İstasyon! 🚫 \n\nSırayla ilerlemelisin. Şu an "${expectedStation.title}" istasyonunu arıyor olmalısın. Doğru istasyonu bulup tekrar tarat!`);
+                alert(`❌ Yanlış İstasyon!\n\nSırayla ilerlemelisin dedektif. Şu an "${expectedStation.title}" istasyonunu arıyor olmalısın. Doğru istasyonu bulup tekrar tarat!`);
             }
             this.showHudView('dashboard-view');
         }
@@ -1156,12 +1156,21 @@ class ScavengerEscapeGame {
 
         const self = this;
 
-        navigator.mediaDevices.getUserMedia({ 
-            video: { facingMode: "environment" } 
-        }).then(stream => {
+        // iOS Safari ve modern cihazlar için ideal video ve rear-camera kısıtlamaları
+        const constraints = {
+            video: {
+                facingMode: "environment",
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            }
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints).then(stream => {
             self.scannerStream = stream;
             video.srcObject = stream;
-            video.setAttribute("playsinline", true); // iOS Safari tam ekran engelleme
+            video.setAttribute("playsinline", "true");
+            video.playsInline = true;
+            video.muted = true;
             video.play().catch(e => console.error("Video oynatılamadı:", e));
             
             // Tarama döngüsünü başlat
@@ -1177,23 +1186,48 @@ class ScavengerEscapeGame {
         
         const video = document.getElementById('scanner-video');
         
-        if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+        if (video && video.videoWidth > 0 && video.videoHeight > 0) {
+            // jsQR kütüphanesinin yüklenip yüklenmediğini kontrol et
+            if (typeof jsQR === 'undefined') {
+                console.error("jsQR kütüphanesi bulunamadı, CDN yüklemesi bekleniyor...");
+                if (this.scannerActive) {
+                    requestAnimationFrame(() => this.scanFrame());
+                }
+                return;
+            }
+
+            let width = video.videoWidth;
+            let height = video.videoHeight;
+            
+            // Tarama hızını ve performansını artırmak için yüksek çözünürlüğü maks 640px'e ölçeklendir
+            const maxDimension = 640;
+            if (width > maxDimension || height > maxDimension) {
+                const ratio = width / height;
+                if (width > height) {
+                    width = maxDimension;
+                    height = Math.round(maxDimension / ratio);
+                } else {
+                    height = maxDimension;
+                    width = Math.round(maxDimension * ratio);
+                }
+            }
+
             // Arka planda piksel analizi için gizli canvas oluştur
             if (!this.scanCanvas) {
                 this.scanCanvas = document.createElement('canvas');
                 this.scanCtx = this.scanCanvas.getContext('2d', { willReadFrequently: true });
             }
             
-            this.scanCanvas.width = video.videoWidth;
-            this.scanCanvas.height = video.videoHeight;
+            this.scanCanvas.width = width;
+            this.scanCanvas.height = height;
             
-            this.scanCtx.drawImage(video, 0, 0, this.scanCanvas.width, this.scanCanvas.height);
+            this.scanCtx.drawImage(video, 0, 0, width, height);
             
-            const imageData = this.scanCtx.getImageData(0, 0, this.scanCanvas.width, this.scanCanvas.height);
+            const imageData = this.scanCtx.getImageData(0, 0, width, height);
             
-            // jsQR kütüphanesi ile çözümle
+            // jsQR kütüphanesi ile çözümle (inversionAttempts: attemptBoth ile gölgeli kodları da oku)
             const code = jsQR(imageData.data, imageData.width, imageData.height, {
-                inversionAttempts: "dontInvert"
+                inversionAttempts: "attemptBoth"
             });
             
             if (code && code.data) {
@@ -1250,7 +1284,7 @@ class ScavengerEscapeGame {
             this.handleScannedStation(stationId);
         } else {
             sound.playError();
-            alert("Okunan QR Kod bu oyuna ait geçerli bir istasyon içermiyor! (" + decodedText + ")");
+            alert("❌ Hatalı veya Geçersiz QR Kod!\n\nOkunan QR kod bu oyuna ait geçerli bir istasyon içermiyor. Lütfen doğru istasyon kağıdını okuttuğunuzdan emin olun!");
             this.showHudView('dashboard-view');
         }
     }
