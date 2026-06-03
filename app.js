@@ -1515,7 +1515,14 @@ class ScavengerEscapeGame {
         if (!this.state.subjects[sub]) {
             this.state.subjects[sub] = { currentStep: 1, solvedStations: [], activeRiddleId: null, startTime: null, endTime: null };
         }
-        return this.state.subjects[sub];
+        
+        const subState = this.state.subjects[sub];
+        if (!subState.stationOrder) {
+            const STATIONS = SUBJECTS_DATA[sub].stations;
+            subState.stationOrder = STATIONS.map(s => s.id);
+        }
+        
+        return subState;
     }
 
     // LocalStorage İlerlemeyi Yükle
@@ -1765,6 +1772,7 @@ class ScavengerEscapeGame {
             const subState = this.activeSubState;
             subState.startTime = Date.now();
             subState.currentStep = 1;
+            this.initializeStationOrder();
             this.saveState();
             
             this.showScreen('game-screen');
@@ -1904,6 +1912,53 @@ class ScavengerEscapeGame {
     // MACERA AKIŞ KONTROLÜ
     // ==========================================================================
     
+    initializeStationOrder() {
+        const sub = this.state.activeSubject || 'kimya';
+        const STATIONS = SUBJECTS_DATA[sub].stations;
+        const subState = this.activeSubState;
+        
+        const physicalIds = [];
+        for (let i = 2; i <= STATIONS.length; i++) {
+            physicalIds.push(i);
+        }
+        
+        for (let i = physicalIds.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = physicalIds[i];
+            physicalIds[i] = physicalIds[j];
+            physicalIds[j] = temp;
+        }
+        
+        subState.stationOrder = [1, ...physicalIds];
+    }
+
+    getRiddleStation(stepIndex) {
+        const STATIONS = this.activeStations;
+        const subState = this.activeSubState;
+        const order = subState.stationOrder;
+        
+        if (stepIndex === STATIONS.length) {
+            return STATIONS.find(s => s.id === STATIONS.length);
+        } else {
+            const nextStationId = order[stepIndex];
+            return STATIONS.find(s => s.id === nextStationId - 1);
+        }
+    }
+
+    getNextStationName(stepIndex) {
+        const STATIONS = this.activeStations;
+        const subState = this.activeSubState;
+        const order = subState.stationOrder;
+        
+        if (stepIndex === STATIONS.length) {
+            return "BİTTİ";
+        } else {
+            const nextStationId = order[stepIndex];
+            const nextStation = STATIONS.find(s => s.id === nextStationId);
+            return nextStation ? nextStation.title : "";
+        }
+    }
+
     // Oyun HUD Ekranını Güncelleme
     setupGameUI() {
         this.renderInventoryHUD();
@@ -1977,15 +2032,16 @@ class ScavengerEscapeGame {
         const targetInstruction = document.getElementById('target-instruction-text');
         
         const currentActiveStep = subState.currentStep;
-        const currentStation = STATIONS.find(s => s.id === currentActiveStep);
         
-        if (currentStation) {
-            if (currentActiveStep === 1) {
-                targetTitle.innerText = "Başlangıç İstasyonu";
-                targetInstruction.innerText = "Oyunu başlatmak için aşağıdaki ilk bilmeceyi çözmelisiniz. (Bilmece kartı otomatik yüklendi).";
-            } else {
-                targetTitle.innerText = currentStation.title;
-                targetInstruction.innerText = `Sınıf içerisinde '${currentStation.title}' istasyonunu bulun, üzerindeki QR kodu okutun.`;
+        if (currentActiveStep === 1) {
+            targetTitle.innerText = "Başlangıç İstasyonu";
+            targetInstruction.innerText = "Oyunu başlatmak için aşağıdaki ilk bilmeceyi çözmelisiniz. (Bilmece kartı otomatik yüklendi).";
+        } else {
+            const expectedStationId = subState.stationOrder[currentActiveStep - 1];
+            const expectedStation = STATIONS.find(s => s.id === expectedStationId);
+            if (expectedStation) {
+                targetTitle.innerText = expectedStation.title;
+                targetInstruction.innerText = `Sınıf içerisinde '${expectedStation.title}' istasyonunu bulun, üzerindeki QR kodu okutun.`;
             }
         }
     }
@@ -1996,42 +2052,43 @@ class ScavengerEscapeGame {
         const subState = this.activeSubState;
         const currentActiveStep = subState.currentStep;
         
-        // Doğru istasyon mu taranıyor kontrolü (Çözme sırasını zorunlu kılar)
-        if (stationId === currentActiveStep) {
-            this.loadRiddleIntoView(stationId);
+        let expectedStationId = null;
+        if (currentActiveStep > 1) {
+            expectedStationId = subState.stationOrder[currentActiveStep - 1];
+        }
+        
+        if (stationId === expectedStationId) {
+            this.loadRiddleIntoView(currentActiveStep);
         } else {
-            // Yanlış istasyon uyarısı
             sound.playError();
-            const expectedStation = STATIONS.find(s => s.id === currentActiveStep);
+            const expectedStation = STATIONS.find(s => s.id === expectedStationId);
             
-            if (stationId < currentActiveStep) {
-                alert(`⚠️ Zaten Çözüldü!\n\nBu istasyonu (${STATIONS.find(s=>s.id===stationId).title}) daha önce başarıyla çözmüştün.\n\nŞu an araman gereken hedef istasyon: "${expectedStation.title}"`);
+            if (subState.solvedStations.includes(stationId)) {
+                alert(`⚠️ Zaten Çözüldü!\n\nBu istasyonu (${STATIONS.find(s=>s.id===stationId).title}) daha önce başarıyla çözmüştün.\n\nŞu an araman gereken hedef istasyon: "${expectedStation ? expectedStation.title : ''}"`);
             } else {
-                alert(`❌ Yanlış İstasyon!\n\nSırayla ilerlemelisin dedektif. Şu an "${expectedStation.title}" istasyonunu arıyor olmalısın. Doğru istasyonu bulup tekrar tarat!`);
+                alert(`❌ Yanlış İstasyon!\n\nSırayla ilerlemelisin dedektif. Şu an "${expectedStation ? expectedStation.title : ''}" istasyonunu arıyor olmalısın. Doğru istasyonu bulup tekrar tarat!`);
             }
             this.showHudView('dashboard-view');
         }
     }
 
     // Bilmeceyi Ekrana Doldurma
-    loadRiddleIntoView(stationId) {
+    loadRiddleIntoView(stepIndex) {
         const STATIONS = this.activeStations;
         const subState = this.activeSubState;
-        subState.activeRiddleId = stationId;
+        subState.activeRiddleId = stepIndex;
         this.saveState();
         
-        const station = STATIONS.find(s => s.id === stationId);
-        if (!station) return;
- 
-        // Ekrana bilgileri yaz
-        if (stationId === STATIONS.length) {
+        if (stepIndex === STATIONS.length) {
             // FİNAL ADIMI - Anagram Solver
             document.getElementById('riddle-station-num').innerText = "FİNAL GÖREVİ";
             document.getElementById('riddle-title').innerText = "Gizemli Kişi / Kavram";
             
             const earnedLetters = [];
             STATIONS.forEach(s => {
-                if (s.letter) earnedLetters.push(s.letter);
+                if (subState.solvedStations.includes(s.id) && s.letter) {
+                    earnedLetters.push(s.letter);
+                }
             });
             
             const lettersHTML = earnedLetters.map(l => `<span class="anagram-letter-chip">${l}</span>`).join('');
@@ -2047,10 +2104,21 @@ class ScavengerEscapeGame {
             document.getElementById('riddle-hint').innerText = `Topladığın harfleri anlamlı bir isim/kelime grubu olacak şekilde karıştırarak dâhiyi bulmalısın.`;
         } else {
             // Normal İstasyon Bilmecesi
-            document.getElementById('riddle-station-num').innerText = stationId === 1 ? "BAŞLANGIÇ ADIMI" : `İSTASYON #${stationId - 1}`;
-            document.getElementById('riddle-title').innerText = station.title;
-            document.getElementById('riddle-text').innerText = station.riddle;
-            document.getElementById('riddle-hint').innerText = station.hint;
+            const riddleStation = this.getRiddleStation(stepIndex);
+            if (!riddleStation) return;
+            
+            document.getElementById('riddle-station-num').innerText = stepIndex === 1 ? "BAŞLANGIÇ ADIMI" : `İSTASYON #${stepIndex - 1}`;
+            
+            let cardTitle = "Başlangıç Noktası";
+            if (stepIndex > 1) {
+                const scannedStationId = subState.stationOrder[stepIndex - 1];
+                const scannedStation = STATIONS.find(s => s.id === scannedStationId);
+                if (scannedStation) cardTitle = scannedStation.title;
+            }
+            
+            document.getElementById('riddle-title').innerText = cardTitle;
+            document.getElementById('riddle-text').innerText = riddleStation.riddle;
+            document.getElementById('riddle-hint').innerText = riddleStation.hint;
         }
 
         // Reset accordion
@@ -2087,11 +2155,12 @@ class ScavengerEscapeGame {
             return;
         }
         
-        const station = STATIONS.find(s => s.id === subState.activeRiddleId);
-        if (!station) return;
+        const stepIndex = subState.activeRiddleId;
+        const riddleStation = this.getRiddleStation(stepIndex);
+        if (!riddleStation) return;
         
         const normalizedInput = normalizeTurkish(answer);
-        const isCorrect = station.answers.some(ans => normalizeTurkish(ans) === normalizedInput);
+        const isCorrect = riddleStation.answers.some(ans => normalizeTurkish(ans) === normalizedInput);
         
         feedback.classList.remove('active');
         
@@ -2101,7 +2170,7 @@ class ScavengerEscapeGame {
             
             feedback.className = 'feedback-msg success active';
             
-            if (subState.activeRiddleId === STATIONS.length) {
+            if (stepIndex === STATIONS.length) {
                 // ZAFER! Final şifre çözüldü!
                 feedback.innerText = "GİZEMLİ KİŞİ/KAVRAM BULUNDU! Tebrikler dedektif.";
                 subState.solvedStations.push(STATIONS.length);
@@ -2113,11 +2182,22 @@ class ScavengerEscapeGame {
                     this.checkCompletion();
                 }, 1800);
             } else {
-                const earnedLetterText = station.letter ? `\nKazanılan Harf: [ ${station.letter} ]` : "";
-                feedback.innerText = `DOĞRU CEVAP! \nBir sonraki hedef: "${station.nextStationName}" ${earnedLetterText}`;
+                let earnedLetter = null;
+                if (stepIndex > 1) {
+                    const scannedStationId = subState.stationOrder[stepIndex - 1];
+                    const scannedStation = STATIONS.find(s => s.id === scannedStationId);
+                    if (scannedStation) earnedLetter = scannedStation.letter;
+                }
+                const earnedLetterText = earnedLetter ? `\nKazanılan Harf: [ ${earnedLetter} ]` : "";
+                const nextStationName = this.getNextStationName(stepIndex);
+                feedback.innerText = `DOĞRU CEVAP! \nBir sonraki hedef: "${nextStationName}" ${earnedLetterText}`;
                 
-                subState.solvedStations.push(subState.activeRiddleId);
-                subState.currentStep = subState.activeRiddleId + 1;
+                const solvedStationId = stepIndex === 1 ? 1 : subState.stationOrder[stepIndex - 1];
+                if (!subState.solvedStations.includes(solvedStationId)) {
+                    subState.solvedStations.push(solvedStationId);
+                }
+                
+                subState.currentStep = stepIndex + 1;
                 subState.activeRiddleId = null;
                 this.saveState();
                 
