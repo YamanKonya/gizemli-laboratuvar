@@ -1288,7 +1288,7 @@ class ParticleBg {
         
         window.addEventListener('resize', () => this.resize());
         
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 45; i++) {
             this.particles.push(this.createParticle(true));
         }
         
@@ -1302,17 +1302,22 @@ class ParticleBg {
     }
 
     createParticle(randomY = false) {
+        const spyChars = ['0', '1', '?', '#', '*', 'sys', 'spy', 'key', 'code', 'data', '🕵️‍♂️', '🔍', '🔑', '🔒'];
+        const chosenChar = spyChars[Math.floor(Math.random() * spyChars.length)];
+        const isSpecial = chosenChar.length > 1;
+
         return {
             x: Math.random() * this.canvas.width,
-            y: randomY ? Math.random() * this.canvas.height : this.canvas.height + 15,
-            size: Math.random() * 7 + 4, // Larger chemistry bubble size!
-            speedY: -(Math.random() * 0.45 + 0.15),
+            y: randomY ? Math.random() * this.canvas.height : -20,
+            size: isSpecial ? (Math.random() * 5 + 10) : (Math.random() * 8 + 10),
+            speedY: Math.random() * 0.7 + 0.35,
             speedX: (Math.random() - 0.5) * 0.1,
-            alpha: Math.random() * 0.45 + 0.15,
+            alpha: isSpecial ? (Math.random() * 0.15 + 0.05) : (Math.random() * 0.35 + 0.1),
             color: Math.random() > 0.5 ? '0, 240, 255' : '189, 0, 255',
             wobble: Math.random() * Math.PI * 2,
-            wobbleSpeed: Math.random() * 0.04 + 0.015,
-            wobbleAmount: Math.random() * 3 + 1.5
+            wobbleSpeed: Math.random() * 0.015 + 0.005,
+            wobbleAmount: Math.random() * 2 + 0.5,
+            char: chosenChar
         };
     }
 
@@ -1325,43 +1330,19 @@ class ParticleBg {
             p.x += p.speedX;
             p.wobble += p.wobbleSpeed;
             
-            // Calculate wobble offset for a cute bubbling floating effect
             const xOffset = Math.sin(p.wobble) * p.wobbleAmount;
             
-            if (p.y < -20 || p.x + xOffset < -20 || p.x + xOffset > this.canvas.width + 20) {
+            if (p.y > this.canvas.height + 20 || p.x + xOffset < -30 || p.x + xOffset > this.canvas.width + 30) {
                 this.particles[index] = this.createParticle(false);
             }
             
             this.ctx.save();
             
-            // 3D bubble radial gradient
-            const grad = this.ctx.createRadialGradient(
-                p.x + xOffset - p.size * 0.25, 
-                p.y - p.size * 0.25, 
-                p.size * 0.05, 
-                p.x + xOffset, 
-                p.y, 
-                p.size
-            );
-            grad.addColorStop(0, 'rgba(255, 255, 255, 0.45)');
-            grad.addColorStop(0.3, `rgba(${p.color}, ${p.alpha * 0.3})`);
-            grad.addColorStop(0.85, `rgba(${p.color}, ${p.alpha})`);
-            grad.addColorStop(1, `rgba(${p.color}, 0.05)`);
-            
-            // Draw bubble base
-            this.ctx.beginPath();
-            this.ctx.arc(p.x + xOffset, p.y, p.size, 0, Math.PI * 2);
-            this.ctx.fillStyle = grad;
-            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-            this.ctx.lineWidth = 1;
-            this.ctx.fill();
-            this.ctx.stroke();
-            
-            // Draw specular glass reflection highlight
-            this.ctx.beginPath();
-            this.ctx.arc(p.x + xOffset - p.size * 0.3, p.y - p.size * 0.3, p.size * 0.18, 0, Math.PI * 2);
-            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
-            this.ctx.fill();
+            this.ctx.font = `${p.size}px 'Share Tech Mono', monospace`;
+            this.ctx.fillStyle = `rgba(${p.color}, ${p.alpha})`;
+            this.ctx.shadowColor = `rgba(${p.color}, 0.5)`;
+            this.ctx.shadowBlur = 6;
+            this.ctx.fillText(p.char, p.x + xOffset, p.y);
             
             this.ctx.restore();
         });
@@ -1371,7 +1352,7 @@ class ParticleBg {
 
     drawGrid() {
         const gridSpacing = 40;
-        this.ctx.strokeStyle = 'rgba(0, 240, 255, 0.02)';
+        this.ctx.strokeStyle = 'rgba(0, 240, 255, 0.015)';
         this.ctx.lineWidth = 1;
         
         for (let x = 0; x < this.canvas.width; x += gridSpacing) {
