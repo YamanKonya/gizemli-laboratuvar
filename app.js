@@ -1519,7 +1519,23 @@ class ScavengerEscapeGame {
         const subState = this.state.subjects[sub];
         if (!subState.stationOrder) {
             const STATIONS = SUBJECTS_DATA[sub].stations;
-            subState.stationOrder = STATIONS.map(s => s.id);
+            if (subState.currentStep === 1 && (!subState.solvedStations || subState.solvedStations.length === 0)) {
+                // Generate a shuffled order for a fresh subject session
+                const physicalIds = [];
+                for (let i = 2; i <= STATIONS.length; i++) {
+                    physicalIds.push(i);
+                }
+                for (let i = physicalIds.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    const temp = physicalIds[i];
+                    physicalIds[i] = physicalIds[j];
+                    physicalIds[j] = temp;
+                }
+                subState.stationOrder = [1, ...physicalIds];
+            } else {
+                // Fallback / resume sequential order
+                subState.stationOrder = STATIONS.map(s => s.id);
+            }
         }
         
         return subState;
@@ -1701,6 +1717,15 @@ class ScavengerEscapeGame {
                 if (subject && SUBJECTS_DATA[subject]) {
                     this.state.activeSubject = subject;
                     this.applySubjectTheme(subject);
+                    
+                    // Force a new shuffle if the game hasn't started yet
+                    if (this.state.subjects && this.state.subjects[subject]) {
+                        const tempState = this.state.subjects[subject];
+                        if (tempState.currentStep === 1 && (!tempState.solvedStations || tempState.solvedStations.length === 0)) {
+                            tempState.stationOrder = null;
+                        }
+                    }
+                    
                     this.saveState();
                     
                     const subState = this.activeSubState;
