@@ -997,18 +997,7 @@ const SUBJECTS_DATA = {
             }
         ]
     }
-};bilimin kurucusu dahi bilim insanının adını bulmalısın.",
-        answers: ["galileo galilei", "galileogalilei"],
-        nextStationName: "BİTTİ"
-    }
-];
-
-// Kazanılan tüm harfler (Linear sırada):
-// 2. İ, 3. G, 4. O, 5. L, 6. L, 7. İ, 8. L, 9. A, 10. A, 11. L, 12. E, 13. G, 15. İ, 16. L, 17. E
-// Toplam 15 Harf Kartı: İ - G - O - L - L - İ - L - A - A - L - E - G - İ - L - E
-// Bu harflerden "GALİLEO GALİLEİ" oluşturulur.
-
-const SECRET_PHRASE = "GALİLEO GALİLEİ";
+};
 
 // ==========================================================================
 // 2. SES SENTEZLEYİCİ ENGINE (Web Audio API - Asset Bağımsız)
@@ -1293,7 +1282,69 @@ class ConfettiEngine {
                 gravity: 0.18,
                 rotation: Math.random() * 360,
                 rotationSpeed: (Math.random() - 0.5) * 10
-     class ScavengerEscapeGame {
+            });
+        }
+        
+        this.animate();
+    }
+
+    animate() {
+        if (!this.active) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        let alive = false;
+        
+        this.particles.forEach((p) => {
+            p.speedY += p.gravity;
+            p.x += p.speedX;
+            p.y += p.speedY;
+            p.rotation += p.rotationSpeed;
+            
+            if (p.y < this.canvas.height) {
+                alive = true;
+            }
+            
+            this.ctx.save();
+            this.ctx.translate(p.x, p.y);
+            this.ctx.rotate((p.rotation * Math.PI) / 180);
+            this.ctx.fillStyle = p.color;
+            this.ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+            this.ctx.restore();
+        });
+        
+        if (alive) {
+            requestAnimationFrame(() => this.animate());
+        } else {
+            this.active = false;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+    }
+}
+
+const confetti = new ConfettiEngine();
+
+// ==========================================================================
+// 5. METİN NORMALİZE ETME MOTORU (Typo & Accent Tolerant Matcher)
+// ==========================================================================
+function normalizeTurkish(str) {
+    if (!str) return "";
+    
+    let text = str.trim();
+    text = text.replace(/I/g, 'ı').replace(/İ/g, 'i').toLowerCase();
+    text = text.replace(/\s+/g, '');
+    
+    const map = {
+        'ç': 'c',
+        'ğ': 'g',
+        'ı': 'i',
+        'ö': 'o',
+        'ş': 's',
+        'ü': 'u'
+    };
+    
+    return text.split('').map(c => map[c] || c).join('');
+}
+
+class ScavengerEscapeGame {
     constructor() {
         this.state = {
             teamName: '',
